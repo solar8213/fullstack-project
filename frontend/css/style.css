@@ -171,17 +171,29 @@ h1 {
     }
 }
 
-/* Контейнер аватарки */
-.cardNZ-avatar {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    overflow: hidden;
-    flex-shrink: 0;
+/* Контейнер, который выстраивает текст и вторую картинку в ряд */
+.inline-photo-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;          /* Расстояние между текстом и картинкой */
+    margin: 12px 0;     /* Отступы сверху и снизу */
 }
 
-.cardNZ-avatar img {
+/* Контейнер для большой прямоугольной фотографии */
+.cardNZ-banner {
+    width: 100%;            /* Растягивается на всю доступную ширину блока текста */
+    max-width: 480px;       /* Максимальная ширина картинки */
+    height: 240px;          /* Высота прямоугольного блока */
+    margin: 16px auto;      /* Отступы сверху/снизу и центрирование по горизонтали */
+    border-radius: 12px;    /* Скругленные углы */
+    overflow: hidden;       /* Обрезает всё, что выходит за рамки */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Легкая тень для объема */
+}
+
+/* Само изображение внутри прямоугольного контейнера */
+.cardNZ-banner img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: cover;      /* Сохраняет пропорции, заполняя всю площадь */
+    display: block;
 }
