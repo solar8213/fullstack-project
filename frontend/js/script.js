@@ -1,5 +1,14 @@
 const buttons = document.querySelectorAll('.tab-btn');
 const cards = document.querySelectorAll('.card');
+const teamMembers = document.querySelectorAll('.team-member');
+
+teamMembers.forEach(member => {
+    member.addEventListener('click', () => {
+        const targetId = member.getAttribute('data-target');
+        document.querySelector(`.tab-btn[data-target="${targetId}"]`).click();
+    });
+});
+
 
 buttons.forEach(button => {
     button.addEventListener('click', () => {
