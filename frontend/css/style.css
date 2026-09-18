@@ -1,0 +1,172 @@
+/* ===== База ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    background-color: #f7f7f8;
+    color: #16181d;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ===== Контейнер ===== */
+.container {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 64px 24px 80px;
+}
+
+h1 {
+    font-size: 30px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: #16181d;
+    padding-bottom: 18px;
+    margin-bottom: 32px;
+    border-bottom: 1px solid #dcdee3;
+}
+
+/* ===== Вкладки ===== */
+.tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 28px;
+}
+
+.tab-btn {
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+    color: #4a4f57;
+    background-color: #ffffff;
+    border: 1px solid #d7d9de;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.18s ease, color 0.18s ease,
+                border-color 0.18s ease;
+}
+
+.tab-btn:hover {
+    border-color: #16181d;
+    color: #16181d;
+}
+
+.tab-btn:focus-visible {
+    outline: 2px solid #16181d;
+    outline-offset: 2px;
+}
+
+.tab-btn.active {
+    background-color: #16181d;
+    border-color: #16181d;
+    color: #ffffff;
+}
+
+/* ===== Карточка ===== */
+.card {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    background-color: #ffffff;
+    border: 1px solid #e3e5ea;
+    border-radius: 6px;
+    padding: 36px 40px;
+    margin-top: 0;
+    box-shadow: 0 1px 2px rgba(20, 22, 26, 0.04);
+    animation: fade-in 0.25s ease;
+}
+
+@keyframes fade-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ===== Аватар ===== */
+.card-avatar {
+    flex-shrink: 0;
+    width: 140px;
+    height: 140px;
+    margin-bottom: 0;
+}
+
+.card-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 1px solid #d7d9de;
+    background-color: #f0f1f3;
+}
+
+/* ===== Текст карточки ===== */
+.card-info h2 {
+    font-size: 21px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    margin-bottom: 6px;
+}
+
+.card-info p {
+    font-size: 15px;
+    color: #4a4f57;
+    margin-bottom: 8px;
+}
+
+/* строка «Роль: ...» — выделяем сдержанно */
+.card-info p:first-of-type {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #16181d;
+    background-color: #f0f1f3;
+    border: 1px solid #e3e5ea;
+    border-radius: 3px;
+    padding: 3px 10px;
+    margin-bottom: 14px;
+}
+
+.card-info p:last-child {
+    margin-bottom: 0;
+}
+
+/* ===== Мобильная версия ===== */
+@media (max-width: 640px) {
+    .container {
+        padding: 40px 16px 56px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    .card {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 28px 22px;
+        gap: 20px;
+    }
+
+    .card-avatar {
+        width: 120px;
+        height: 120px;
+    }
+
+    .tab-btn {
+        flex: 1 1 calc(50% - 8px);
+        padding: 9px 12px;
+    }
+}

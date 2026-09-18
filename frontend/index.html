@@ -1,12 +1,85 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Наша команда</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+
+    <main class="container">
+        <h1>Наша команда</h1>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-target="member-1">Участник 1</button>
+            <button class="tab-btn" data-target="member-2">Участник 2</button>
+            <button class="tab-btn" data-target="member-3">Участник 3</button>
+            <button class="tab-btn" data-target="member-4">Участник 4</button>
+        </div>
+
+        <div class="cards-content">
+            <!--Кирилл тут меняй-->
+            <div id="member-1" class="card hidden">
+                <!-- Добавляем картинку -->
+                <div class="card-avatar">
+                    <img src="image/member1.jpg" alt="Фото">
+                </div>
     
+                <div class="card-info">
+                    <h2>Участник</h2>
+                    <p>Роль: ...</p>
+                    <p>Описание, навыки, контакты...</p>
+                </div>
+            </div>
+            <!--и до этого-->
+            
+            <!--Никита тут меняй-->
+            <div id="member-2" class="card hidden">
+                <!-- Добавляем картинку -->
+                <div class="card-avatar">
+                    <img src="image/member2.jpg" alt="Фото">
+                </div>
+    
+                <div class="card-info">
+                    <h2>Участник</h2>
+                    <p>Роль: ...</p>
+                    <p>Описание, навыки, контакты...</p>
+                </div>
+            </div>
+            <!--до этого-->
+
+            <!--Лаура тут меняй--> 
+            <div id="member-3" class="card hidden">
+                <!-- Добавляем картинку -->
+                <div class="card-avatar">
+                    <img src="image/member3.jpg" alt="Фото">
+                </div>
+    
+                <div class="card-info">
+                    <h2>Участник</h2>
+                    <p>Роль: ...</p>
+                    <p>Описание, навыки, контакты...</p>
+                </div>
+            </div>
+            <!--до этого-->
+
+
+
+            <div id="member-4" class="card hidden">
+                <!-- Добавляем картинку -->
+                <div class="card-avatar">
+                    <img src="image/member4.jpg" alt="Фото">
+                </div>
+    
+                <div class="card-info">
+                    <h2>Участник</h2>
+                    <p>Роль: ...</p>
+                    <p>Описание, навыки, контакты...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/script.js"></script>
 </body>
 </html>
