@@ -1,4 +1,4 @@
-/* ===== База ===== */
+/* База */
 * {
     margin: 0;
     padding: 0;
@@ -13,7 +13,7 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-/* ===== Контейнер ===== */
+/* Контейнер */
 .container {
     max-width: 880px;
     margin: 0 auto;
@@ -30,7 +30,7 @@ h1 {
     border-bottom: 1px solid #dcdee3;
 }
 
-/* ===== Вкладки ===== */
+/* Вкладки */
 .tabs {
     display: flex;
     flex-wrap: wrap;
@@ -69,7 +69,7 @@ h1 {
     color: #ffffff;
 }
 
-/* ===== Карточка ===== */
+/* Карточка */
 .card {
     display: flex;
     align-items: center;
@@ -92,7 +92,7 @@ h1 {
     display: none !important;
 }
 
-/* ===== Аватар ===== */
+/* Аватар */
 .card-avatar {
     flex-shrink: 0;
     width: 140px;
@@ -109,7 +109,7 @@ h1 {
     background-color: #f0f1f3;
 }
 
-/* ===== Текст карточки ===== */
+/* Текст карточки */
 .card-info h2 {
     font-size: 21px;
     font-weight: 600;
@@ -142,7 +142,7 @@ h1 {
     margin-bottom: 0;
 }
 
-/* ===== Мобильная версия ===== */
+/* Мобильная версия */
 @media (max-width: 640px) {
     .container {
         padding: 40px 16px 56px;
