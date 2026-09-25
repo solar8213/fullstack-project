@@ -25,9 +25,6 @@ buttons.forEach(button => {
     });
 });
 
-const buttons = document.querySelectorAll('.tab-btn');
-const cards = document.querySelectorAll('.card');
-const teamMembers = document.querySelectorAll('.team-member');
 
 teamMembers.forEach(member => {
     member.addEventListener('click', () => {
