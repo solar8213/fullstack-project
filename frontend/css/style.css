@@ -341,10 +341,9 @@ h1 {
     color: #16181d;
 }
 #dom-demo-panel {
-    position: fixed;
-    top: 100px;
-    left: 20px;
-    width: 220px;
+    width: 100%;              
+    max-width: 320px;            
+    margin: 16px 0;            
     background-color: #ffffff;
     border: 1px solid #e3e5ea;
     border-radius: 6px;
@@ -366,11 +365,4 @@ h1 {
     margin-bottom: 12px;
     font-size: 15px;
     color: #16181d;
-}
-
-@media (max-width: 900px) {
-    #dom-demo-panel {
-        position: static;
-        margin: 24px auto 0;
-    }
 }
