@@ -1,30 +1,10 @@
 const buttons = document.querySelectorAll('.tab-btn');
 const cards = document.querySelectorAll('.card');
 const teamMembers = document.querySelectorAll('.team-member');
+const domDemoPanel = document.getElementById('dom-demo-panel');
 
-teamMembers.forEach(member => {
-    member.addEventListener('click', () => {
-        const targetId = member.getAttribute('data-target');
-        document.querySelector(`.tab-btn[data-target="${targetId}"]`).click();
-    });
-});
-
-
-buttons.forEach(button => {
-    button.addEventListener('click', () => {
-
-        buttons.forEach(btn => btn.classList.remove('active'));
-        cards.forEach(card => card.classList.add('hidden'));
-
-        button.classList.add('active');
-
-        const targetId = button.getAttribute('data-target');
-
-        const targetCard = document.getElementById(targetId);
-        targetCard.classList.remove('hidden');
-    });
-});
-
+// Скрываем панель по умолчанию (активна вкладка "Команда")
+domDemoPanel.classList.add('hidden');
 
 teamMembers.forEach(member => {
     member.addEventListener('click', () => {
@@ -44,32 +24,15 @@ buttons.forEach(button => {
         const targetId = button.getAttribute('data-target');
         const targetCard = document.getElementById(targetId);
         if (targetCard) targetCard.classList.remove('hidden');
+
+        // Показываем DOM DEMO только на вкладке Task 1
+        if (targetId === 'task1') {
+            domDemoPanel.classList.remove('hidden');
+        } else {
+            domDemoPanel.classList.add('hidden');
+        }
     });
 });
-
-
-
-teamMembers.forEach(member => {
-    member.addEventListener('click', () => {
-        const targetId = member.getAttribute('data-target');
-        const targetButton = document.querySelector(`.tab-btn[data-target="${targetId}"]`);
-        if (targetButton) targetButton.click();
-    });
-});
-
-buttons.forEach(button => {
-    button.addEventListener('click', () => {
-        buttons.forEach(btn => btn.classList.remove('active'));
-        cards.forEach(card => card.classList.add('hidden'));
-
-        button.classList.add('active');
-
-        const targetId = button.getAttribute('data-target');
-        const targetCard = document.getElementById(targetId);
-        if (targetCard) targetCard.classList.remove('hidden');
-    });
-});
-
 
 /* ==============================
    Отдельная панель: создать → изменить → удалить
@@ -107,7 +70,6 @@ btnDeleteElement.addEventListener('click', () => {
     }
 });
 
-
 /* ==============================
    Task 1 (внутри вкладки): изменяемый абзац
    ============================== */
@@ -135,7 +97,6 @@ btnCreateParagraph.addEventListener('click', () => {
 
     btnCreateParagraph.remove();
 });
-
 
 /* ==============================
    Task 2: управление классами
