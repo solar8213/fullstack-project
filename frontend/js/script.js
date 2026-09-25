@@ -51,7 +51,7 @@ btnCreateElement.addEventListener('click', () => {
     item.id = 'created-demo-item';
     item.className = 'new-div';
     item.textContent = 'Я новый элемент';
-    domDemoElement.appendChild(item);
+    document.body.appendChild(item);
 });
 
 // 2. Изменить текст именно в этом созданном элементе
