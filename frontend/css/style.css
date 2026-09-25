@@ -123,8 +123,7 @@ h1 {
     margin-bottom: 8px;
 }
 
-/* строка «Роль: ...» — выделяем сдержанно */
-.card-info p:first-of-type {
+.card-info p:first-of-type:not(.editable-paragraph):not(.old-element) {
     display: inline-block;
     font-size: 12px;
     font-weight: 600;
@@ -137,7 +136,6 @@ h1 {
     padding: 3px 10px;
     margin-bottom: 14px;
 }
-
 .card-info p:last-child {
     margin-bottom: 0;
 }
@@ -287,10 +285,10 @@ h1 {
     transition: color 0.18s ease, font-size 0.18s ease;
 }
 
-.editable-paragraph--active {
+.card-info .editable-paragraph--active {
     color: #c0392b;
+    font-weight: 700;
     font-size: 22px;
-    font-weight: 600;
 }
 
 .classes-info {
@@ -303,4 +301,42 @@ h1 {
 .team-member.active {
     border-color: #16181d;
     background-color: #f0f1f3;
+}
+.demo-box {
+    max-width: 320px;
+    margin: 16px 0;
+    padding: 24px;
+    background-color: #f0f1f3;
+    border: 1px solid #d7d9de;
+    border-radius: 6px;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.18s ease, border-color 0.18s ease;
+}
+
+.demo-box.active {
+    background-color: #16181d;
+    color: #ffffff;
+    border-color: #16181d;
+}
+
+.task-btn {
+    display: block;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    color: #4a4f57;
+    background-color: #ffffff;
+    border: 1px solid #d7d9de;
+    border-radius: 4px;
+    padding: 8px 16px;
+    margin: 10px 0;
+    cursor: pointer;
+    transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+
+.task-btn:hover {
+    border-color: #16181d;
+    color: #16181d;
 }
