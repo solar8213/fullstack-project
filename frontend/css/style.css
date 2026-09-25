@@ -265,3 +265,42 @@ h1 {
     object-position: center 25%;   /* Первое значение — по горизонтали (по центру), второе — по вертикали (сдвиг чуть выше) */
     display: block;
 }
+
+.new-div {
+    max-width: 880px;
+    margin: 24px auto 0;
+    padding: 16px 24px;
+    background-color: #ffffff;
+    border: 1px solid #e3e5ea;
+    border-radius: 6px;
+    font-size: 15px;
+    color: #4a4f57;
+}
+
+.editable-paragraph {
+    max-width: 880px;
+    margin: 16px auto 0;
+    padding: 16px 24px;
+    font-size: 16px;
+    color: #16181d;
+    cursor: pointer;
+    transition: color 0.18s ease, font-size 0.18s ease;
+}
+
+.editable-paragraph--active {
+    color: #c0392b;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.classes-info {
+    font-size: 11px !important;
+    color: #7a7f88 !important;
+    margin-top: 8px !important;
+    word-break: break-word;
+}
+
+.team-member.active {
+    border-color: #16181d;
+    background-color: #f0f1f3;
+}
