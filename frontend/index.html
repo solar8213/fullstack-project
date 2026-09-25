@@ -16,10 +16,13 @@
             <button class="tab-btn" data-target="member-2">Участник 2</button>
             <button class="tab-btn" data-target="member-3">Участник 3</button>
             <button class="tab-btn" data-target="member-4">Участник 4</button>
+            <button class="tab-btn" data-target="task1">Task 1</button>
+            <button class="tab-btn" data-target="task2">Task 2</button>
         </div>
 
         <div id="team" class="card team-card">
             <div class="team-member" data-target="member-1">
+
                 <img src="image/member1.jpg" alt="Кирилл">
                 <span class="team-name">Кирилл</span>
                 <span class="team-role">Team Lead</span>
@@ -227,6 +230,25 @@
                 </div>
             </div>
         </div>
+        <div id="task1" class="card hidden">
+            <div class="card-info">
+                <h2>Task 1: работа с DOM</h2>
+                <h3 id="target-title">Этот заголовок будет изменён</h3>
+                <p class="old-element">Этот абзац с классом old-element — будет удалён скриптом.</p>
+                <div id="task1-output"></div>
+            </div>
+        </div>
+
+        <!-- ================= TASK 2 (новое) ================= -->
+        <div id="task2" class="card hidden">
+            <div class="card-info">
+                <h2>Task 2: управление классами</h2>
+                <div id="demo-box" class="demo-box">
+                    Дважды кликните по этому блоку
+                </div>
+            </div>
+        </div>
+
     </main>
 
     <script src="js/script.js"></script>
