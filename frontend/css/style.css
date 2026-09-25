@@ -361,8 +361,14 @@ h1 {
 }
 
 #dom-demo-element {
-    min-height: 20px;
-    margin-bottom: 12px;
-    font-size: 15px;
-    color: #16181d;
+    position: fixed;
+    top: 100px;
+    left: 20px;
+    width: 220px;
+    min-height: 50px;
+    background-color: #ffffff;
+    border: 1px solid #e3e5ea;
+    border-radius: 6px;
+    padding: 16px;
+    box-shadow: 0 1px 4px rgba(20, 22, 26, 0.08);
 }
