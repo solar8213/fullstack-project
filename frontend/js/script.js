@@ -72,43 +72,47 @@ buttons.forEach(button => {
 
 
 /* ==============================
-   Task 1: работа с DOM
+   Отдельная панель: создать → изменить → удалить
    ============================== */
 
-const task1Output = document.getElementById('task1-output');
+const domDemoElement = document.getElementById('dom-demo-element');
+const btnCreateElement = document.getElementById('btn-create-element');
+const btnChangeElementText = document.getElementById('btn-change-element-text');
+const btnDeleteElement = document.getElementById('btn-delete-element');
 
-// 1. Найти элемент по ID и изменить текст
-const btnChangeText = document.getElementById('btn-change-text');
-const targetTitle = document.getElementById('target-title');
+// 1. Создать элемент
+btnCreateElement.addEventListener('click', () => {
+    if (document.getElementById('created-demo-item')) return;
 
-btnChangeText.addEventListener('click', () => {
-    targetTitle.textContent = 'Привет, мир!';
+    const item = document.createElement('div');
+    item.id = 'created-demo-item';
+    item.className = 'new-div';
+    item.textContent = 'Я новый элемент';
+    domDemoElement.appendChild(item);
 });
 
-// 2. Создать новый div с классом new-div, кнопка исчезает после использования
-const btnCreateDiv = document.getElementById('btn-create-div');
-
-btnCreateDiv.addEventListener('click', () => {
-    const newDiv = document.createElement('div');
-    newDiv.className = 'new-div';
-    newDiv.textContent = 'Я новый элемент';
-    task1Output.appendChild(newDiv);
-
-    btnCreateDiv.remove();
-});
-
-// 3. Удалить элемент с классом old-element
-const btnRemoveOld = document.getElementById('btn-remove-old');
-
-btnRemoveOld.addEventListener('click', () => {
-    const oldElement = document.querySelector('.old-element');
-    if (oldElement) {
-        oldElement.remove();
+// 2. Изменить текст именно в этом созданном элементе
+btnChangeElementText.addEventListener('click', () => {
+    const item = document.getElementById('created-demo-item');
+    if (item) {
+        item.textContent = 'Привет, мир!';
     }
 });
 
-// 4-5. Создать изменяемый абзац, кнопка исчезает после использования.
-// Кнопка стиля остаётся навсегда и переключает красный/жирный текст при каждом клике (спамить можно бесконечно)
+// 3. Удалить этот элемент
+btnDeleteElement.addEventListener('click', () => {
+    const item = document.getElementById('created-demo-item');
+    if (item) {
+        item.remove();
+    }
+});
+
+
+/* ==============================
+   Task 1 (внутри вкладки): изменяемый абзац
+   ============================== */
+
+const task1Output = document.getElementById('task1-output');
 const btnCreateParagraph = document.getElementById('btn-create-paragraph');
 
 btnCreateParagraph.addEventListener('click', () => {

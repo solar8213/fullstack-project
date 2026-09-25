@@ -340,3 +340,37 @@ h1 {
     border-color: #16181d;
     color: #16181d;
 }
+#dom-demo-panel {
+    position: fixed;
+    top: 100px;
+    left: 20px;
+    width: 220px;
+    background-color: #ffffff;
+    border: 1px solid #e3e5ea;
+    border-radius: 6px;
+    padding: 16px;
+    box-shadow: 0 1px 4px rgba(20, 22, 26, 0.08);
+}
+
+#dom-demo-panel h4 {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #7a7f88;
+    margin-bottom: 12px;
+}
+
+#dom-demo-element {
+    min-height: 20px;
+    margin-bottom: 12px;
+    font-size: 15px;
+    color: #16181d;
+}
+
+@media (max-width: 900px) {
+    #dom-demo-panel {
+        position: static;
+        margin: 24px auto 0;
+    }
+}
