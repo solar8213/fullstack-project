@@ -260,6 +260,9 @@
                 </div>
             </div>
         </div>
+
+
+        <!-- ================= TASK 3 ================= -->
         <div id="task3" class="card hidden">
             <div class="card-info">
                 <h2>Task 3: Таблица</h2>
@@ -268,10 +271,11 @@
                 <label>Столбцов: <input type="number" id="table-cols" value="3" min="1" max="15"></label>
                 <button id="btn-generate-table" class="task-btn">Создать таблицу</button>
 
+                <div id="table-error" class="error-message"></div>
+
                 <div id="table-container"></div>
 
                 <label for="color-select">Цвет:</label>
-
                 <select id="color-select">
                     <option value="">Без цвета</option>
                     <option value="color-yellow">Жёлтый</option>

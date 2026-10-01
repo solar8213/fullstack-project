@@ -120,9 +120,16 @@ demoBox.addEventListener('dblclick', () => {
     classesInfo.textContent = 'Классы: ' + classListArray.join(', ');
 });
 
-// Task 3:
+/* ==============================
+   Task 3: генерация и подсчет таблицы
+   ============================== */
+
 const tableContainer = document.getElementById('table-container');
 const btnGenerateTable = document.getElementById('btn-generate-table');
+const btnCountColor = document.getElementById('btn-count-color');
+const colorSelect = document.getElementById('color-select');
+const colorCountResult = document.getElementById('color-count-result');
+const tableError = document.getElementById('table-error');
 
 const cellColors = [
     '',
@@ -136,17 +143,17 @@ function generateTable(rows, cols) {
 
     const table = document.createElement('table');
 
-    for (let r=0; r<rows; r++){
+    for (let r = 0; r < rows; r++) {
         const tr = document.createElement('tr');
 
-        for (let c=0; c<cols;c++) {
+        for (let c = 0; c < cols; c++) {
             const td = document.createElement('td');
 
             td.classList.add('table-cell');
 
             td.addEventListener('click', () => {
                 cycleCellColor(td);
-            })
+            });
 
             tr.appendChild(td);
         }
@@ -154,58 +161,69 @@ function generateTable(rows, cols) {
     }
     tableContainer.appendChild(table);
 }
-function cycleCellColor(cell){
+
+function cycleCellColor(cell) {
     let currentIndex = cellColors.findIndex(colorClass => {
-        if (colorClass == ''){
-            return !cell.classList.contains('color-yellow')&&
-            !cell.classList.contains('color-green')&&
-            !cell.classList.contains('color-blue');
+        if (colorClass === '') {
+            return !cell.classList.contains('color-yellow') &&
+                   !cell.classList.contains('color-green') &&
+                   !cell.classList.contains('color-blue');
         }
         return cell.classList.contains(colorClass);
     });
-    if (currentIndex == -1){
+
+    if (currentIndex === -1) {
         currentIndex = 0;
     }
+
     cell.classList.remove(
         'color-yellow',
         'color-green',
         'color-blue'
     );
+
     const nextIndex = (currentIndex + 1) % cellColors.length;
-    
     const nextColor = cellColors[nextIndex];
-    if (nextColor !== ''){
+
+    if (nextColor !== '') {
         cell.classList.add(nextColor);
     }
 }
+
 btnGenerateTable.addEventListener('click', () => {
+    const rowsInput = document.getElementById('table-rows').value;
+    const colsInput = document.getElementById('table-cols').value;
 
-    const rows = parseInt(
-        document.getElementById('table-rows').value
-    ) || 1;
+    const rows = parseInt(rowsInput, 10);
+    const cols = parseInt(colsInput, 10);
 
-    const cols = parseInt(
-        document.getElementById('table-cols').value
-    ) || 1;
+    if (tableError) tableError.textContent = '';
+    if (colorCountResult) colorCountResult.textContent = '';
+
+    // ПРОВЕРКА: Если значение меньше либо равно 0 или пустое
+    if (isNaN(rows) || isNaN(cols) || rows <= 0 || cols <= 0) {
+        if (tableError) {
+            tableError.textContent = 'Ошибка: количество строк и столбцов должно быть больше 0!';
+        } else {
+            alert('Ошибка: количество строк и столбцов должно быть больше 0!');
+        }
+        tableContainer.innerHTML = ''; 
+        return;
+    }
 
     generateTable(rows, cols);
+});
 
-    const btnCountColor = document.getElementById('btn-count-color');
-    const colorSelect = document.getElementById('color-select');
-    const colorCountResult = document.getElementById('color-count-result');
-
+// 2. Подсчет ячеек вынесен наружу
+if (btnCountColor) {
     btnCountColor.addEventListener('click', () => {
-
         const selectedColor = colorSelect.value;
-
         const cells = document.querySelectorAll('.table-cell');
 
         let count = 0;
 
         cells.forEach(cell => {
-
             if (selectedColor === '') {
-
                 if (
                     !cell.classList.contains('color-yellow') &&
                     !cell.classList.contains('color-green') &&
@@ -213,21 +231,18 @@ btnGenerateTable.addEventListener('click', () => {
                 ) {
                     count++;
                 }
-
             } else {
-
                 if (cell.classList.contains(selectedColor)) {
                     count++;
                 }
-
             }
-
         });
 
-        colorCountResult.textContent =
-            'Количество ячеек: ' + count;
+        if (colorCountResult) {
+            colorCountResult.textContent = 'Количество ячеек: ' + count;
+        }
     });
-});
+}
 
 const themeToggle = document.getElementById('theme-toggle');
 
