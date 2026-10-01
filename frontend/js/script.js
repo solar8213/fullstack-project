@@ -189,7 +189,46 @@ btnGenerateTable.addEventListener('click', () => {
     ) || 1;
 
     generateTable(rows, cols);
+
+    const btnCountColor = document.getElementById('btn-count-color');
+    const colorSelect = document.getElementById('color-select');
+    const colorCountResult = document.getElementById('color-count-result');
+
+    btnCountColor.addEventListener('click', () => {
+
+        const selectedColor = colorSelect.value;
+
+        const cells = document.querySelectorAll('.table-cell');
+
+        let count = 0;
+
+        cells.forEach(cell => {
+
+            if (selectedColor === '') {
+
+                if (
+                    !cell.classList.contains('color-yellow') &&
+                    !cell.classList.contains('color-green') &&
+                    !cell.classList.contains('color-blue')
+                ) {
+                    count++;
+                }
+
+            } else {
+
+                if (cell.classList.contains(selectedColor)) {
+                    count++;
+                }
+
+            }
+
+        });
+
+        colorCountResult.textContent =
+            'Количество ячеек: ' + count;
+    });
 });
+
 const themeToggle = document.getElementById('theme-toggle');
 
 themeToggle.addEventListener('click', () => {
