@@ -122,7 +122,7 @@ demoBox.addEventListener('dblclick', () => {
 
 // Task 3:
 const tableContainer = document.getElementById('table-container');
-const btnGenerateTable = document.getElementById('generate-table');
+const btnGenerateTable = document.getElementById('btn-generate-table');
 const cellColoros = ['', 'color-yellow', 'color-green', 'color-blue'];
 
 function generateTable(rows, cols){
