@@ -123,55 +123,67 @@ demoBox.addEventListener('dblclick', () => {
 // Task 3:
 const tableContainer = document.getElementById('table-container');
 const btnGenerateTable = document.getElementById('btn-generate-table');
-const cellColoros = ['', 'color-yellow', 'color-green', 'color-blue'];
 
-function generateTable(rows, cols){
+const cellColors = [
+    '',
+    'color-yellow',
+    'color-green',
+    'color-blue'
+];
+
+function generateTable(rows, cols) {
     tableContainer.innerHTML = '';
+
     const table = document.createElement('table');
-    for (let r = 0; r < cols; r++){
+
+    for (let r=0; r<rows; r++){
         const tr = document.createElement('tr');
 
-        for (let c= 0; c < cols; c++){
+        for (let c=0; c<cols;c++) {
             const td = document.createElement('td');
+
             td.classList.add('table-cell');
-            td.addEventListener('click', () => cycleCellColor(td));
+
+            td.addEventListener('click', () => {
+                cycleCellColor(td);
+            })
+
             tr.appendChild(td);
         }
-
         table.appendChild(tr);
     }
     tableContainer.appendChild(table);
 }
 function cycleCellColor(cell){
-    let cellColors;
-    let currentIndex = cellColors.findIndex(colorClass => cell.classList.contains(colorClass));
-
-    cellColoros.forEach(colorClass => {
-        if (colorClass) cell.classList.remove(colorClass);
+    let currentIndex = cellColors.findIndex(colorClass => {
+        if (colorClass == ''){
+            return !cell.classList.contains('color-yellow')&&
+            !cell.classList.contains('color-green')&&
+            !cell.classList.contains('color-blue');
+        }
+        return cell.classList.contains(colorClass);
     });
-}
-btnGenerateTable.addEventListener('click',() => {
-    const rows = parseInt(document.getElementById('table-rows').value) || 1;
-    const cols = parseInt(document.getElementById('table-cols').value) || 1;
-    generateTable(rows, cols);
-});
-
-const btnCountColor = document.getElementById('btn-count-color');
-const colorSelect = document.getElementById('color-select');
-const colorCountResult = document.getElementById('color-count-result');
-
-btnCountColor.addEventListener('click', () => {
-    const selectedColor = colorSelect.value;
-    let cellsToCount;
-
-    if (selectedColor) {
-        cellsToCount = document.querySelectorAll('.table-cell' + selectedColor);
-    }else{
-        cellsToCount = document.querySelectorAll(
-            '.table-cell:not(.color-yellow):not(.color-green):not(.color-blue)'
-        );
+    if (currentIndex == -1){
+        currentIndex = 0;
     }
-    colorCountResult.textContent = 'Количество ячеек: ' + cellsToCount.length;
+    cell.classList.remove(
+        'color-yellow',
+        'color-green',
+        'color-blue'
+    );
+    const nextIndex = (currentIndex + 1) % cellColors.length;
+    
+    const nextColor = cellColors[nextIndex];
+    if (nextColor !== ''){
+        cell.classList.add(nextColor);
+    }
+}
+btnGenerateTable.addEventListener('click', () => {
+
+    const rows = parseInt(
+        document.getElementById('table-cols').value
+    ) || 1;
+    generateTable(rows, cols);
 });
 
 const themeToggle = document.getElementById('theme-toggle');
