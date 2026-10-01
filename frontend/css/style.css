@@ -369,3 +369,43 @@ h1 {
     border-radius: 6px;
     padding: 16px;
 }
+
+#table-container{
+    margin: 16px 0;
+}
+#generate-table,
+#table-container table {
+    border-collapse: collapse;
+}
+
+.table-cell {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #d7d9de;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.table-cell.color-yellow {background-color: #f5d547;}
+.table-cell.color-green {background-color: #7cc47f;}
+.table-cell.color-blue {background-color: #6fa8dc;}
+
+:root {
+    --bg-color: #f7f7f8;
+    --text-color: #16181d;
+    --card-bg: #ffffff;
+    --border-color: #343841;
+}
+
+body {
+    background-color: var(--bg-color);
+    color:var(--text-color);
+}
+.card{
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+}
+h1 {
+    color: var(--text-color);
+    border-bottom: 1px solid var(--border-color);
+}

@@ -173,3 +173,9 @@ btnCountColor.addEventListener('click', () => {
     }
     colorCountResult.textContent = 'Количество ячеек: ' + cellsToCount.length;
 });
+
+const themeToggle = document.getElementById('theme-toggle');
+
+themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark-theme');
+});
