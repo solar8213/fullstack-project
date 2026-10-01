@@ -119,3 +119,57 @@ demoBox.addEventListener('dblclick', () => {
     }
     classesInfo.textContent = 'Классы: ' + classListArray.join(', ');
 });
+
+// Task 3:
+const tableContainer = document.getElementById('table-container');
+const btnGenerateTable = document.getElementById('generate-table');
+const cellColoros = ['', 'color-yellow', 'color-green', 'color-blue'];
+
+function generateTable(rows, cols){
+    tableContainer.innerHTML = '';
+    const table = document.createElement('table');
+    for (let r = 0; r < cols; r++){
+        const tr = document.createElement('tr');
+
+        for (let c= 0; c < cols; c++){
+            const td = document.createElement('td');
+            td.classList.add('table-cell');
+            td.addEventListener('click', () => cycleCellColor(td));
+            tr.appendChild(td);
+        }
+
+        table.appendChild(tr);
+    }
+    tableContainer.appendChild(table);
+}
+function cycleCellColor(cell){
+    let cellColors;
+    let currentIndex = cellColors.findIndex(colorClass => cell.classList.contains(colorClass));
+
+    cellColoros.forEach(colorClass => {
+        if (colorClass) cell.classList.remove(colorClass);
+    });
+}
+btnGenerateTable.addEventListener('click',() => {
+    const rows = parseInt(document.getElementById('table-rows').value) || 1;
+    const cols = parseInt(document.getElementById('table-cols').value) || 1;
+    generateTable(rows, cols);
+});
+
+const btnCountColor = document.getElementById('btn-count-color');
+const colorSelect = document.getElementById('color-select');
+const colorCountResult = document.getElementById('color-count-result');
+
+btnCountColor.addEventListener('click', () => {
+    const selectedColor = colorSelect.value;
+    let cellsToCount;
+
+    if (selectedColor) {
+        cellsToCount = document.querySelectorAll('.table-cell' + selectedColor);
+    }else{
+        cellsToCount = document.querySelectorAll(
+            '.table-cell:not(.color-yellow):not(.color-green):not(.color-blue)'
+        );
+    }
+    colorCountResult.textContent = 'Количество ячеек: ' + cellsToCount.length;
+});
