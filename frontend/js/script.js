@@ -181,11 +181,15 @@ function cycleCellColor(cell){
 btnGenerateTable.addEventListener('click', () => {
 
     const rows = parseInt(
+        document.getElementById('table-rows').value
+    ) || 1;
+
+    const cols = parseInt(
         document.getElementById('table-cols').value
     ) || 1;
+
     generateTable(rows, cols);
 });
-
 const themeToggle = document.getElementById('theme-toggle');
 
 themeToggle.addEventListener('click', () => {
