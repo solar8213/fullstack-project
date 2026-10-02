@@ -467,7 +467,9 @@ body.dark-theme .team-member:hover {
 body.dark-theme .team-role {
     color: #a0a4ad;
 }
-
+body.dark-theme .team-name {
+    color: #e8e9ec;
+}
 body.dark-theme .card-info p,
 body.dark-theme .card-info li {
     color: #c5c8ce;
