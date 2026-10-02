@@ -117,13 +117,21 @@ h1 {
     margin-bottom: 6px;
 }
 
+.card-info h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 14px 0 4px;
+}
+
 .card-info p {
     font-size: 15px;
     color: #4a4f57;
     margin-bottom: 8px;
 }
 
-.card-info p:first-of-type:not(.editable-paragraph):not(.old-element) {
+/* Первый абзац карточки (роль) — «бейдж».
+   Селектор с ">" , чтобы не цеплять <p> внутри <address> */
+.card-info > p:first-of-type:not(.editable-paragraph):not(.old-element) {
     display: inline-block;
     font-size: 12px;
     font-weight: 600;
@@ -136,8 +144,27 @@ h1 {
     padding: 3px 10px;
     margin-bottom: 14px;
 }
+
 .card-info p:last-child {
     margin-bottom: 0;
+}
+
+.card-info ul {
+    padding-left: 20px;
+    margin-bottom: 8px;
+}
+
+.card-info li {
+    font-size: 15px;
+    color: #4a4f57;
+}
+
+.card-info a {
+    color: inherit;
+}
+
+address {
+    font-style: normal;
 }
 
 /* Мобильная версия */
@@ -225,42 +252,43 @@ h1 {
     margin-top: 4px;
 }
 
+/* Исправлено: правило с 88px теперь внутри media-запроса */
 @media (max-width: 640px) {
     .team-card {
         grid-template-columns: repeat(2, 1fr);
         gap: 12px;
     }
-}
+
     .team-member img {
         width: 88px;
         height: 88px;
     }
+}
 
 /* Контейнер, который выстраивает текст и вторую картинку в ряд */
 .inline-photo-container {
     display: flex;
     align-items: center;
-    gap: 20px;          /* Расстояние между текстом и картинкой */
-    margin: 12px 0;     /* Отступы сверху и снизу */
+    gap: 20px;
+    margin: 12px 0;
 }
 
-/* Контейнер для большой прямоугольной фотографии */
+/* Большая прямоугольная фотография */
 .cardNZ-banner {
-    width: 100%;            /* Растягивается на всю доступную ширину блока текста */
-    max-width: 480px;       /* Максимальная ширина картинки */
-    height: 240px;          /* Высота прямоугольного блока */
-    margin: 16px auto;      /* Отступы сверху/снизу и центрирование по горизонтали */
-    border-radius: 12px;    /* Скругленные углы */
-    overflow: hidden;       /* Обрезает всё, что выходит за рамки */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Легкая тень для объема */
+    width: 100%;
+    max-width: 480px;
+    height: 240px;
+    margin: 16px auto;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Само изображение внутри прямоугольного контейнера */
 .cardNZ-banner img {
     width: 100%;
     height: 100%;
-    object-fit: cover;      /* Сохраняет пропорции, заполняя всю площадь */
-    object-position: center 25%;   /* Первое значение — по горизонтали (по центру), второе — по вертикали (сдвиг чуть выше) */
+    object-fit: cover;
+    object-position: center 25%;
     display: block;
 }
 
@@ -302,6 +330,7 @@ h1 {
     border-color: #16181d;
     background-color: #f0f1f3;
 }
+
 .demo-box {
     max-width: 320px;
     margin: 16px 0;
@@ -340,10 +369,11 @@ h1 {
     border-color: #16181d;
     color: #16181d;
 }
+
 #dom-demo-panel {
-    width: 100%;              
-    max-width: 320px;            
-    margin: 16px 0;            
+    width: 100%;
+    max-width: 320px;
+    margin: 16px 0;
     background-color: #ffffff;
     border: 1px solid #e3e5ea;
     border-radius: 6px;
@@ -351,13 +381,14 @@ h1 {
     box-shadow: 0 1px 4px rgba(20, 22, 26, 0.08);
 }
 
-#dom-demo-panel h4 {
+/* Исправлено: h4 -> h3 */
+#dom-demo-panel h3 {
     font-size: 13px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     color: #7a7f88;
-    margin-bottom: 12px;
+    margin: 0 0 12px;
 }
 
 #dom-demo-element {
@@ -370,9 +401,10 @@ h1 {
     padding: 16px;
 }
 
-#table-container{
+#table-container {
     margin: 16px 0;
 }
+
 #generate-table,
 #table-container table {
     border-collapse: collapse;
@@ -386,10 +418,11 @@ h1 {
     transition: background-color 0.15s ease;
 }
 
-.table-cell.color-yellow {background-color: #f5d547;}
-.table-cell.color-green {background-color: #7cc47f;}
-.table-cell.color-blue {background-color: #6fa8dc;}
+.table-cell.color-yellow { background-color: #f5d547; }
+.table-cell.color-green  { background-color: #7cc47f; }
+.table-cell.color-blue   { background-color: #6fa8dc; }
 
+/* Тема */
 :root {
     --bg-color: #f7f7f8;
     --text-color: #16181d;
@@ -399,55 +432,63 @@ h1 {
 
 body {
     background-color: var(--bg-color);
-    color:var(--text-color);
+    color: var(--text-color);
 }
-.card{
+
+.card {
     background-color: var(--card-bg);
     border: 1px solid var(--border-color);
 }
+
 h1 {
     color: var(--text-color);
     border-bottom: 1px solid var(--border-color);
 }
-body.dark-theme{
+
+body.dark-theme {
     --bg-color: #15171b;
     --text-color: #e8e9ec;
     --card-bg: #1f2126;
     --border-color: #343841;
 }
-body.dark-theme .tab-btn{
+
+body.dark-theme .tab-btn,
+body.dark-theme .task-btn {
     color: #e8e9ec;
     background-color: #1f2126;
     border-color: #343841;
 }
-body.dark-theme .task-btn{
-    color: #e8e9ec;
+
+body.dark-theme .team-member:hover {
     background-color: #1f2126;
     border-color: #343841;
 }
-body.dark-theme .team-member:hover{
-    background-color: #1f2126;
-    border-color: #343841;
-}
-body.dark-theme .team-role{
+
+body.dark-theme .team-role {
     color: #a0a4ad;
 }
-body.dark-theme .card-info p{
+
+body.dark-theme .card-info p,
+body.dark-theme .card-info li {
     color: #c5c8ce;
 }
+
 body.dark-theme #dom-demo-panel {
     background-color: #1f2126;
     border-color: #343841;
 }
-body.dark-theme .new-div{
+
+body.dark-theme .new-div {
     background-color: #1f2126;
     border-color: #343841;
     color: #c5c8ce;
 }
-body.dark-theme .demo-box{
+
+body.dark-theme .demo-box {
     background-color: #1f2126;
     border-color: #343841;
 }
-body.dark-theme .table-cell{
+
+body.dark-theme .table-cell {
     border-color: #343841;
 }
