@@ -161,6 +161,7 @@ function generateTable(rows, cols) {
 
       td.addEventListener("click", () => {
         cycleCellColor(td);
+        updateColorCounters();
       });
 
       tr.appendChild(td);
@@ -168,6 +169,7 @@ function generateTable(rows, cols) {
     table.appendChild(tr);
   }
   tableContainer.appendChild(table);
+  updateColorCounters();
 }
 
 function cycleCellColor(cell) {
@@ -256,3 +258,37 @@ const themeToggle = document.getElementById("theme-toggle");
 themeToggle.addEventListener("click", () => {
   document.body.classList.toggle("dark-theme");
 });
+
+
+function updateColorCounters() {
+    const cells = document.querySelectorAll('.table-cell');
+    
+    let noneCount = 0;
+    let yellowCount = 0;
+    let greenCount = 0;
+    let blueCount = 0;
+
+    cells.forEach(cell => {
+        if (cell.classList.contains('color-yellow')) {
+            yellowCount++;
+        } else if (cell.classList.contains('color-green')) {
+            greenCount++;
+        } else if (cell.classList.contains('color-blue')) {
+            blueCount++;
+        } else {
+            noneCount++; // Без цвета
+        }
+    });
+
+    // Находим элементы на странице и обновляем их текст
+    // (убедитесь, что такие id есть в вашем HTML)
+    const elNone = document.getElementById('count-none');
+    const elYellow = document.getElementById('count-yellow');
+    const elGreen = document.getElementById('count-green');
+    const elBlue = document.getElementById('count-blue');
+
+    if (elNone) elNone.textContent = noneCount;
+    if (elYellow) elYellow.textContent = yellowCount;
+    if (elGreen) elGreen.textContent = greenCount;
+    if (elBlue) elBlue.textContent = blueCount;
+}

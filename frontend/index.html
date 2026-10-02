@@ -272,15 +272,11 @@
 
                 <div id="table-container"></div>
 
-                <label for="color-select">Цвет:</label>
-                <select id="color-select">
-                    <option value="">Без цвета</option>
-                    <option value="color-yellow">Жёлтый</option>
-                    <option value="color-green">Зелёный</option>
-                    <option value="color-blue">Синий</option>
-                </select>
-                <button id="btn-count-color" class="task-btn">Посчитать ячейки</button>
-                <p id="color-count-result" aria-live="polite"></p>
+                <label for="color-select">Счётчик цвета ячеек:</label>
+                <div>Без цвета: <span id="count-none">0</span></div>
+                <div>Желтые: <span id="count-yellow">0</span></div>
+                <div>Зеленые: <span id="count-green">0</span></div>
+                <div>Синие: <span id="count-blue">0</span></div>
             </div>
         </section>
 
