@@ -306,11 +306,13 @@ const todoInput = document.getElementById("todo-input");
 const todoError = document.getElementById("todo-error");
 
 let todos = [];
+const isServerTodo = (id) => id <= 254;
 
 async function fetchTodos() {
   try {
     if (todoError) todoError.textContent = "";
     const response = await fetch("https://dummyjson.com/todos?limit=10");
+    if (!response.ok) throw new Error("HTTP " + response.status);
     const data = await response.json();
     todos = data.todos;
     renderTodos();
@@ -325,7 +327,7 @@ function renderTodos() {
   todoList.innerHTML = "";
 
   if (todos.length === 0) {
-    todoList.innerHTML = '<p class="placeholder-text">Список задач пуст.</p>';
+    todoList.innerHTML = '<li class="placeholder-text">Список задач пуст.</li>';
     return;
   }
 
@@ -340,6 +342,7 @@ function renderTodos() {
         <span class="todo-text">${item.todo}</span>
       </div>
       <button class="delete-btn task-btn" data-id="${item.id}" style="color: #c0392b; border-color: #d7d9de;">Удалить</button>
+      <button class="edit-btn task-btn" data-id="${item.id}">Изменить</button>
     `;
 
     todoList.appendChild(li);
@@ -361,6 +364,7 @@ async function addTodo() {
         userId: 1,
       }),
     });
+    if (!response.ok) throw new Error("HTTP " + response.status);
 
     const newTodo = await response.json();
     newTodo.id = Date.now(); 
@@ -376,32 +380,58 @@ if (todoList) {
   todoList.addEventListener("click", async (e) => {
     const id = Number(e.target.getAttribute("data-id"));
 
-    if (e.target.classList.contains("delete-btn")) {
+      if (e.target.classList.contains("delete-btn")) {
+        try {
+          if (isServerTodo(id)) {
+            const res = await fetch(`https://dummyjson.com/todos/${id}`, { method: "DELETE" });
+            if (!res.ok) throw new Error("HTTP " + res.status);
+          }
+          todos = todos.filter((t) => t.id !== id);
+          renderTodos();
+        } catch (error) {
+          if (todoError) todoError.textContent = "Ошибка при удалении!";
+        }
+      }
+
+    if (e.target.classList.contains("edit-btn")) {
+      const target = todos.find((t) => t.id === id);
+      const newText = prompt("Новый текст задачи:", target.todo);
+      if (newText === null || !newText.trim()) return;
+
       try {
-        await fetch(`https://dummyjson.com/todos/${id}`, { method: "DELETE" });
-        todos = todos.filter((t) => t.id !== id);
+        if (isServerTodo(id)) {
+          const res = await fetch(`https://dummyjson.com/todos/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ todo: newText.trim() }),
+          });
+          if (!res.ok) throw new Error("HTTP " + res.status);
+        }
+        target.todo = newText.trim();
         renderTodos();
       } catch (error) {
-        if (todoError) todoError.textContent = "Ошибка при удалении!";
+        if (todoError) todoError.textContent = "Ошибка при редактировании!";
       }
     }
 
     if (e.target.classList.contains("todo-checkbox")) {
       const completed = e.target.checked;
       try {
-        await fetch(`https://dummyjson.com/todos/${id}`, {
+        if (isServerTodo(id)) {
+          const res = await fetch(`https://dummyjson.com/todos/${id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ completed }),
         });
-
-        const target = todos.find((t) => t.id === id);
-        if (target) target.completed = completed;
-        renderTodos();
-      } catch (error) {
-        if (todoError) todoError.textContent = "Ошибка при обновлении задачи!";
+        if (!res.ok) throw new Error("HTTP " + res.status);
       }
+      const target = todos.find((t) => t.id === id);
+      if (target) target.completed = completed;
+      renderTodos();
+    } catch (error) {
+      if (todoError) todoError.textContent = "Ошибка при обновлении задачи!";
     }
+  }
   });
 }
 
