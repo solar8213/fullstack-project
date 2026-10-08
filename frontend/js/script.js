@@ -363,6 +363,7 @@ async function addTodo() {
     });
 
     const newTodo = await response.json();
+    newTodo.id = Date.now(); 
     todos.unshift(newTodo);
     renderTodos();
     todoInput.value = "";
