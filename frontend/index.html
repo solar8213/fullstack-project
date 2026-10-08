@@ -20,6 +20,7 @@
             <button class="tab-btn" data-target="task2">Task 2</button>
             <button class="tab-btn" data-target="task3">Task 3</button>
             <button class="tab-btn" data-target="task4">Task 4</button>
+            <button class="tab-btn" data-target="todos">Todos</button>
         </nav>
 
         <section id="team" class="card team-card">
@@ -289,6 +290,31 @@
             </div>
         </section>
 
+
+
+
+
+                <!-- ================= Todos ================= -->
+        <section id="todos" class="card hidden">
+            <div class="card-info" style="width: 100%;">
+                <h2>Task 5: Список задач из API</h2>
+                <p>Работа с DummyJSON REST API (получение, добавление, удаление и обновление задач).</p>
+                
+                <div class="todo-controls" style="margin: 16px 0;">
+                    <button id="btn-load" class="task-btn">Загрузить задачи</button>
+                </div>
+
+                <div class="form-group" style="display: flex; gap: 12px; margin-bottom: 16px;">
+                    <input type="text" id="todo-input" placeholder="Введите текст новой задачи..." />
+                    <button id="btn-add" class="task-btn">Добавить</button>
+                </div>
+
+                <div id="todo-error" class="error-message" role="alert"></div>
+                <ul id="todo-list" class="todo-list" style="list-style: none; max-height: 350px; overflow-y: auto;">
+                    <p class="placeholder-text">Нажмите «Загрузить задачи», чтобы подтянуть данные с сервера.</p>
+                </ul>
+            </div>
+        </section>
     </main>
 
     <div id="dom-demo-element"></div>

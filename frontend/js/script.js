@@ -292,3 +292,122 @@ function updateColorCounters() {
     if (elGreen) elGreen.textContent = greenCount;
     if (elBlue) elBlue.textContent = blueCount;
 }
+
+
+
+/* ==============================
+   Task 5: API Todo List
+   ============================== */
+
+const todoList = document.getElementById("todo-list");
+const btnLoad = document.getElementById("btn-load");
+const btnAdd = document.getElementById("btn-add");
+const todoInput = document.getElementById("todo-input");
+const todoError = document.getElementById("todo-error");
+
+let todos = [];
+
+async function fetchTodos() {
+  try {
+    if (todoError) todoError.textContent = "";
+    const response = await fetch("https://dummyjson.com/todos?limit=10");
+    const data = await response.json();
+    todos = data.todos;
+    renderTodos();
+  } catch (error) {
+    if (todoError) todoError.textContent = "Ошибка при загрузке данных с сервера!";
+    console.error(error);
+  }
+}
+
+function renderTodos() {
+  if (!todoList) return;
+  todoList.innerHTML = "";
+
+  if (todos.length === 0) {
+    todoList.innerHTML = '<p class="placeholder-text">Список задач пуст.</p>';
+    return;
+  }
+
+  todos.forEach((item) => {
+    const li = document.createElement("li");
+    li.className = `todo-item ${item.completed ? "completed" : ""}`;
+    li.style.cssText = "display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f1f3; gap: 12px;";
+
+    li.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
+        <input type="checkbox" ${item.completed ? "checked" : ""} data-id="${item.id}" class="todo-checkbox">
+        <span class="todo-text">${item.todo}</span>
+      </div>
+      <button class="delete-btn task-btn" data-id="${item.id}" style="color: #c0392b; border-color: #d7d9de;">Удалить</button>
+    `;
+
+    todoList.appendChild(li);
+  });
+}
+
+async function addTodo() {
+  if (!todoInput) return;
+  const text = todoInput.value.trim();
+  if (!text) return;
+
+  try {
+    const response = await fetch("https://dummyjson.com/todos/add", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        todo: text,
+        completed: false,
+        userId: 1,
+      }),
+    });
+
+    const newTodo = await response.json();
+    todos.unshift(newTodo);
+    renderTodos();
+    todoInput.value = "";
+  } catch (error) {
+    if (todoError) todoError.textContent = "Ошибка при добавлении задачи!";
+  }
+}
+
+if (todoList) {
+  todoList.addEventListener("click", async (e) => {
+    const id = Number(e.target.getAttribute("data-id"));
+
+    if (e.target.classList.contains("delete-btn")) {
+      try {
+        await fetch(`https://dummyjson.com/todos/${id}`, { method: "DELETE" });
+        todos = todos.filter((t) => t.id !== id);
+        renderTodos();
+      } catch (error) {
+        if (todoError) todoError.textContent = "Ошибка при удалении!";
+      }
+    }
+
+    if (e.target.classList.contains("todo-checkbox")) {
+      const completed = e.target.checked;
+      try {
+        await fetch(`https://dummyjson.com/todos/${id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ completed }),
+        });
+
+        const target = todos.find((t) => t.id === id);
+        if (target) target.completed = completed;
+        renderTodos();
+      } catch (error) {
+        if (todoError) todoError.textContent = "Ошибка при обновлении задачи!";
+      }
+    }
+  });
+}
+
+if (btnLoad) btnLoad.addEventListener("click", fetchTodos);
+if (btnAdd) btnAdd.addEventListener("click", addTodo);
+if (todoInput) {
+  todoInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") addTodo();
+  });
+}
