@@ -259,21 +259,20 @@ themeToggle.addEventListener("click", () => {
   document.body.classList.toggle("dark-theme");
 });
 
-
 function updateColorCounters() {
-  const cells = document.querySelectorAll('.table-cell');
+  const cells = document.querySelectorAll(".table-cell");
 
   let noneCount = 0;
   let yellowCount = 0;
   let greenCount = 0;
   let blueCount = 0;
 
-  cells.forEach(cell => {
-    if (cell.classList.contains('color-yellow')) {
+  cells.forEach((cell) => {
+    if (cell.classList.contains("color-yellow")) {
       yellowCount++;
-    } else if (cell.classList.contains('color-green')) {
+    } else if (cell.classList.contains("color-green")) {
       greenCount++;
-    } else if (cell.classList.contains('color-blue')) {
+    } else if (cell.classList.contains("color-blue")) {
       blueCount++;
     } else {
       noneCount++; // Без цвета
@@ -282,18 +281,16 @@ function updateColorCounters() {
 
   // Находим элементы на странице и обновляем их текст
   // (убедитесь, что такие id есть в вашем HTML)
-  const elNone = document.getElementById('count-none');
-  const elYellow = document.getElementById('count-yellow');
-  const elGreen = document.getElementById('count-green');
-  const elBlue = document.getElementById('count-blue');
+  const elNone = document.getElementById("count-none");
+  const elYellow = document.getElementById("count-yellow");
+  const elGreen = document.getElementById("count-green");
+  const elBlue = document.getElementById("count-blue");
 
   if (elNone) elNone.textContent = noneCount;
   if (elYellow) elYellow.textContent = yellowCount;
   if (elGreen) elGreen.textContent = greenCount;
   if (elBlue) elBlue.textContent = blueCount;
 }
-
-
 
 /* ==============================
    Task 5: API Todo List
@@ -311,12 +308,13 @@ const modal = document.getElementById("modal");
 const modalInput = document.getElementById("modal-input");
 const modalOk = document.getElementById("modal-ok");
 const modalCancel = document.getElementById("modal-cancel");
+const modalUserId = document.getElementById("modal-userid");
 
-
-function askNewText(oldText) {
+function askEdit(oldText, oldUserId) {
   return new Promise((resolve) => {
     modal.classList.remove("hidden");
     modalInput.value = oldText;
+    modalUserId.value = oldUserId;
     modalInput.focus();
 
     function close(result) {
@@ -324,16 +322,18 @@ function askNewText(oldText) {
       resolve(result);
     }
 
+    const confirmEdit = () =>
+      close({ text: modalInput.value, userId: Number(modalUserId.value) });
 
-    modalOk.onclick = () => close(modalInput.value);
-
-    modalCancel.onclick = () => close(null);
-
-    modalInput.onkeydown = (e) => {
-      if (e.key === "Enter") close(modalInput.value);
+    const onKey = (e) => {
+      if (e.key === "Enter") confirmEdit();
       if (e.key === "Escape") close(null);
     };
 
+    modalOk.onclick = confirmEdit;
+    modalCancel.onclick = () => close(null);
+    modalInput.onkeydown = onKey;
+    modalUserId.onkeydown = onKey;
   });
 }
 
@@ -345,12 +345,13 @@ async function fetchTodos() {
     const response = await fetch("https://dummyjson.com/todos?limit=10");
 
     if (!response.ok) throw new Error("HTTP " + response.status);
-    
+
     const data = await response.json();
     todos = data.todos;
     renderTodos();
   } catch (error) {
-    if (todoError) todoError.textContent = "Ошибка при загрузке данных с сервера!";
+    if (todoError)
+      todoError.textContent = "Ошибка при загрузке данных с сервера!";
     console.error(error);
   }
 }
@@ -367,7 +368,8 @@ function renderTodos() {
   todos.forEach((item) => {
     const li = document.createElement("li");
     li.className = `todo-item ${item.completed ? "completed" : ""}`;
-    li.style.cssText = "display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f1f3; gap: 12px;";
+    li.style.cssText =
+      "display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f1f3; gap: 12px;";
 
     li.innerHTML = `
       <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
@@ -390,7 +392,8 @@ async function addTodo() {
 
   const userId = Number(todoUserId.value);
   if (!Number.isInteger(userId) || userId < 1) {
-    if (todoError) todoError.textContent = "User ID должен быть целым числом от 1!";
+    if (todoError)
+      todoError.textContent = "User ID должен быть целым числом от 1!";
     return;
   }
 
@@ -405,7 +408,6 @@ async function addTodo() {
       }),
     });
 
-    
     if (!response.ok) throw new Error("HTTP " + response.status);
 
     const newTodo = await response.json();
@@ -426,7 +428,9 @@ if (todoList) {
     if (e.target.classList.contains("delete-btn")) {
       try {
         if (isServerTodo(id)) {
-          const res = await fetch(`https://dummyjson.com/todos/${id}`, { method: "DELETE" });
+          const res = await fetch(`https://dummyjson.com/todos/${id}`, {
+            method: "DELETE",
+          });
           if (!res.ok) throw new Error("HTTP " + res.status);
         }
         todos = todos.filter((t) => t.id !== id);
@@ -438,14 +442,15 @@ if (todoList) {
 
     if (e.target.classList.contains("edit-btn")) {
       const target = todos.find((t) => t.id === id);
-      const newText = prompt("Новый текст задачи:", target.todo);
-      if (newText === null || !newText.trim()) return;
 
-      const newUserIdRaw = prompt("User ID:", target.userId);
-      if (newUserIdRaw === null) return;
-      const newUserId = Number(newUserIdRaw);
+      const result = await askEdit(target.todo, target.userId);
+      if (result === null || !result.text.trim()) return;
+
+      const newText = result.text.trim();
+      const newUserId = result.userId;
       if (!Number.isInteger(newUserId) || newUserId < 1) {
-        if (todoError) todoError.textContent = "User ID должен быть целым числом от 1!";
+        if (todoError)
+          todoError.textContent = "User ID должен быть целым числом от 1!";
         return;
       }
 
@@ -454,11 +459,11 @@ if (todoList) {
           const res = await fetch(`https://dummyjson.com/todos/${id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ todo: newText.trim() }),
+            body: JSON.stringify({ todo: newText, userId: newUserId }),
           });
           if (!res.ok) throw new Error("HTTP " + res.status);
         }
-        target.todo = newText.trim();
+        target.todo = newText;
         target.userId = newUserId;
         renderTodos();
       } catch (error) {
