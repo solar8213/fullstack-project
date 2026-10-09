@@ -301,7 +301,6 @@ const btnLoad = document.getElementById("btn-load");
 const btnAdd = document.getElementById("btn-add");
 const todoInput = document.getElementById("todo-input");
 const todoError = document.getElementById("todo-error");
-const todoUserId = document.getElementById("todo-userid");
 
 let todos = [];
 const modal = document.getElementById("modal");
@@ -309,9 +308,11 @@ const modalInput = document.getElementById("modal-input");
 const modalOk = document.getElementById("modal-ok");
 const modalCancel = document.getElementById("modal-cancel");
 const modalUserId = document.getElementById("modal-userid");
+const modalTitle = document.getElementById("modal-title");
 
-function askEdit(oldText, oldUserId) {
+function askEdit(oldText, oldUserId, title) {
   return new Promise((resolve) => {
+    modalTitle.textContent = title;
     modal.classList.remove("hidden");
     modalInput.value = oldText;
     modalUserId.value = oldUserId;
@@ -386,11 +387,11 @@ function renderTodos() {
 }
 
 async function addTodo() {
-  if (!todoInput) return;
-  const text = todoInput.value.trim();
-  if (!text) return;
+  const result = await askEdit("", "", "Новая задача");
+  if (result === null || !result.text.trim()) return;
 
-  const userId = Number(todoUserId.value);
+  const text = result.text.trim();
+  const userId = result.userId;
   if (!Number.isInteger(userId) || userId < 1) {
     if (todoError)
       todoError.textContent = "User ID должен быть целым числом от 1!";
@@ -415,7 +416,6 @@ async function addTodo() {
     newTodo.userId = userId;
     todos.unshift(newTodo);
     renderTodos();
-    todoInput.value = "";
   } catch (error) {
     if (todoError) todoError.textContent = "Ошибка при добавлении задачи!";
   }
@@ -443,7 +443,7 @@ if (todoList) {
     if (e.target.classList.contains("edit-btn")) {
       const target = todos.find((t) => t.id === id);
 
-      const result = await askEdit(target.todo, target.userId);
+      const result = await askEdit(target.todo, target.userId, "Изменить задачу");
       if (result === null || !result.text.trim()) return;
 
       const newText = result.text.trim();
