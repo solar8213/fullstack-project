@@ -261,36 +261,36 @@ themeToggle.addEventListener("click", () => {
 
 
 function updateColorCounters() {
-    const cells = document.querySelectorAll('.table-cell');
-    
-    let noneCount = 0;
-    let yellowCount = 0;
-    let greenCount = 0;
-    let blueCount = 0;
+  const cells = document.querySelectorAll('.table-cell');
 
-    cells.forEach(cell => {
-        if (cell.classList.contains('color-yellow')) {
-            yellowCount++;
-        } else if (cell.classList.contains('color-green')) {
-            greenCount++;
-        } else if (cell.classList.contains('color-blue')) {
-            blueCount++;
-        } else {
-            noneCount++; // Без цвета
-        }
-    });
+  let noneCount = 0;
+  let yellowCount = 0;
+  let greenCount = 0;
+  let blueCount = 0;
 
-    // Находим элементы на странице и обновляем их текст
-    // (убедитесь, что такие id есть в вашем HTML)
-    const elNone = document.getElementById('count-none');
-    const elYellow = document.getElementById('count-yellow');
-    const elGreen = document.getElementById('count-green');
-    const elBlue = document.getElementById('count-blue');
+  cells.forEach(cell => {
+    if (cell.classList.contains('color-yellow')) {
+      yellowCount++;
+    } else if (cell.classList.contains('color-green')) {
+      greenCount++;
+    } else if (cell.classList.contains('color-blue')) {
+      blueCount++;
+    } else {
+      noneCount++; // Без цвета
+    }
+  });
 
-    if (elNone) elNone.textContent = noneCount;
-    if (elYellow) elYellow.textContent = yellowCount;
-    if (elGreen) elGreen.textContent = greenCount;
-    if (elBlue) elBlue.textContent = blueCount;
+  // Находим элементы на странице и обновляем их текст
+  // (убедитесь, что такие id есть в вашем HTML)
+  const elNone = document.getElementById('count-none');
+  const elYellow = document.getElementById('count-yellow');
+  const elGreen = document.getElementById('count-green');
+  const elBlue = document.getElementById('count-blue');
+
+  if (elNone) elNone.textContent = noneCount;
+  if (elYellow) elYellow.textContent = yellowCount;
+  if (elGreen) elGreen.textContent = greenCount;
+  if (elBlue) elBlue.textContent = blueCount;
 }
 
 
@@ -304,6 +304,7 @@ const btnLoad = document.getElementById("btn-load");
 const btnAdd = document.getElementById("btn-add");
 const todoInput = document.getElementById("todo-input");
 const todoError = document.getElementById("todo-error");
+const todoUserId = document.getElementById("todo-userid");
 
 let todos = [];
 const modal = document.getElementById("modal");
@@ -311,23 +312,23 @@ const modalInput = document.getElementById("modal-input");
 const modalOk = document.getElementById("modal-ok");
 const modalCancel = document.getElementById("modal-cancel");
 function askNewText(oldText) {
-    return new Promise((resolve) => {
-        modal.classList.remove("hidden");
-        modalInput.value = oldText;
-        modalInput.focus();
+  return new Promise((resolve) => {
+    modal.classList.remove("hidden");
+    modalInput.value = oldText;
+    modalInput.focus();
 
-        function close(result) {
-            modal.classList.add("hidden");
-            resolve(result);
-        }
+    function close(result) {
+      modal.classList.add("hidden");
+      resolve(result);
+    }
 
-        modalOk.onclick = () => close(modalInput.value);
-        modalCancel.onclick = () => close(null);
-        modalInput.onkeydown = (e) => {
-            if (e.key === "Enter") close(modalInput.value);
-            if (e.key === "Escape") close(null);
-        };
-    });
+    modalOk.onclick = () => close(modalInput.value);
+    modalCancel.onclick = () => close(null);
+    modalInput.onkeydown = (e) => {
+      if (e.key === "Enter") close(modalInput.value);
+      if (e.key === "Escape") close(null);
+    };
+  });
 }
 const isServerTodo = (id) => id <= 254;
 
@@ -363,6 +364,7 @@ function renderTodos() {
       <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
         <input type="checkbox" ${item.completed ? "checked" : ""} data-id="${item.id}" class="todo-checkbox">
         <span class="todo-text">${item.todo}</span>
+        <span class="todo-user" style="color: #7a7f88; font-size: 12px;">User ${item.userId}</span>
       </div>
       <button class="delete-btn task-btn" data-id="${item.id}" style="color: #c0392b; border-color: #d7d9de;">Удалить</button>
       <button class="edit-btn task-btn" data-id="${item.id}">Изменить</button>
@@ -377,6 +379,12 @@ async function addTodo() {
   const text = todoInput.value.trim();
   if (!text) return;
 
+  const userId = Number(todoUserId.value);
+  if (!Number.isInteger(userId) || userId < 1) {
+    if (todoError) todoError.textContent = "User ID должен быть целым числом от 1!";
+    return;
+  }
+
   try {
     const response = await fetch("https://dummyjson.com/todos/add", {
       method: "POST",
@@ -384,13 +392,14 @@ async function addTodo() {
       body: JSON.stringify({
         todo: text,
         completed: false,
-        userId: 1,
+        userId: userId,
       }),
     });
     if (!response.ok) throw new Error("HTTP " + response.status);
 
     const newTodo = await response.json();
-    newTodo.id = Date.now(); 
+    newTodo.id = Date.now();
+    newTodo.userId = userId;
     todos.unshift(newTodo);
     renderTodos();
     todoInput.value = "";
@@ -403,23 +412,31 @@ if (todoList) {
   todoList.addEventListener("click", async (e) => {
     const id = Number(e.target.getAttribute("data-id"));
 
-      if (e.target.classList.contains("delete-btn")) {
-        try {
-          if (isServerTodo(id)) {
-            const res = await fetch(`https://dummyjson.com/todos/${id}`, { method: "DELETE" });
-            if (!res.ok) throw new Error("HTTP " + res.status);
-          }
-          todos = todos.filter((t) => t.id !== id);
-          renderTodos();
-        } catch (error) {
-          if (todoError) todoError.textContent = "Ошибка при удалении!";
+    if (e.target.classList.contains("delete-btn")) {
+      try {
+        if (isServerTodo(id)) {
+          const res = await fetch(`https://dummyjson.com/todos/${id}`, { method: "DELETE" });
+          if (!res.ok) throw new Error("HTTP " + res.status);
         }
+        todos = todos.filter((t) => t.id !== id);
+        renderTodos();
+      } catch (error) {
+        if (todoError) todoError.textContent = "Ошибка при удалении!";
       }
+    }
 
     if (e.target.classList.contains("edit-btn")) {
       const target = todos.find((t) => t.id === id);
-      const newText = await askNewText(target.todo);
+      const newText = prompt("Новый текст задачи:", target.todo);
       if (newText === null || !newText.trim()) return;
+
+      const newUserIdRaw = prompt("User ID:", target.userId);
+      if (newUserIdRaw === null) return;
+      const newUserId = Number(newUserIdRaw);
+      if (!Number.isInteger(newUserId) || newUserId < 1) {
+        if (todoError) todoError.textContent = "User ID должен быть целым числом от 1!";
+        return;
+      }
 
       try {
         if (isServerTodo(id)) {
@@ -431,6 +448,7 @@ if (todoList) {
           if (!res.ok) throw new Error("HTTP " + res.status);
         }
         target.todo = newText.trim();
+        target.userId = newUserId;
         renderTodos();
       } catch (error) {
         if (todoError) todoError.textContent = "Ошибка при редактировании!";
@@ -442,19 +460,19 @@ if (todoList) {
       try {
         if (isServerTodo(id)) {
           const res = await fetch(`https://dummyjson.com/todos/${id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ completed }),
-        });
-        if (!res.ok) throw new Error("HTTP " + res.status);
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ completed }),
+          });
+          if (!res.ok) throw new Error("HTTP " + res.status);
+        }
+        const target = todos.find((t) => t.id === id);
+        if (target) target.completed = completed;
+        renderTodos();
+      } catch (error) {
+        if (todoError) todoError.textContent = "Ошибка при обновлении задачи!";
       }
-      const target = todos.find((t) => t.id === id);
-      if (target) target.completed = completed;
-      renderTodos();
-    } catch (error) {
-      if (todoError) todoError.textContent = "Ошибка при обновлении задачи!";
     }
-  }
   });
 }
 
