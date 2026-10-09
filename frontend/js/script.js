@@ -311,6 +311,8 @@ const modal = document.getElementById("modal");
 const modalInput = document.getElementById("modal-input");
 const modalOk = document.getElementById("modal-ok");
 const modalCancel = document.getElementById("modal-cancel");
+
+
 function askNewText(oldText) {
   return new Promise((resolve) => {
     modal.classList.remove("hidden");
@@ -322,21 +324,28 @@ function askNewText(oldText) {
       resolve(result);
     }
 
+
     modalOk.onclick = () => close(modalInput.value);
+
     modalCancel.onclick = () => close(null);
+
     modalInput.onkeydown = (e) => {
       if (e.key === "Enter") close(modalInput.value);
       if (e.key === "Escape") close(null);
     };
+
   });
 }
+
 const isServerTodo = (id) => id <= 254;
 
 async function fetchTodos() {
   try {
     if (todoError) todoError.textContent = "";
     const response = await fetch("https://dummyjson.com/todos?limit=10");
+
     if (!response.ok) throw new Error("HTTP " + response.status);
+    
     const data = await response.json();
     todos = data.todos;
     renderTodos();
@@ -395,6 +404,8 @@ async function addTodo() {
         userId: userId,
       }),
     });
+
+    
     if (!response.ok) throw new Error("HTTP " + response.status);
 
     const newTodo = await response.json();
