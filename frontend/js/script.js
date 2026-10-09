@@ -383,6 +383,7 @@ function renderTodos() {
   });
 }
 
+
 async function addTodo() {
   if (!todoInput) return;
   const text = todoInput.value.trim();
