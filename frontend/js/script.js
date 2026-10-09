@@ -306,6 +306,29 @@ const todoInput = document.getElementById("todo-input");
 const todoError = document.getElementById("todo-error");
 
 let todos = [];
+const modal = document.getElementById("modal");
+const modalInput = document.getElementById("modal-input");
+const modalOk = document.getElementById("modal-ok");
+const modalCancel = document.getElementById("modal-cancel");
+function askNewText(oldText) {
+    return new Promise((resolve) => {
+        modal.classList.remove("hidden");
+        modalInput.value = oldText;
+        modalInput.focus();
+
+        function close(result) {
+            modal.classList.add("hidden");
+            resolve(result);
+        }
+
+        modalOk.onclick = () => close(modalInput.value);
+        modalCancel.onclick = () => close(null);
+        modalInput.onkeydown = (e) => {
+            if (e.key === "Enter") close(modalInput.value);
+            if (e.key === "Escape") close(null);
+        };
+    });
+}
 const isServerTodo = (id) => id <= 254;
 
 async function fetchTodos() {
@@ -395,7 +418,7 @@ if (todoList) {
 
     if (e.target.classList.contains("edit-btn")) {
       const target = todos.find((t) => t.id === id);
-      const newText = prompt("Новый текст задачи:", target.todo);
+      const newText = await askNewText(target.todo);
       if (newText === null || !newText.trim()) return;
 
       try {
