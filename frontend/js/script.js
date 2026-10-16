@@ -311,6 +311,7 @@ const userTaskInput = document.getElementById("user-task-input");
 const userTaskAddBtn = document.getElementById("user-task-add-btn");
 const userTaskError = document.getElementById("user-task-error");
 
+let usersMap = {};
 let todos = [];
 let currentActiveUserId = null; 
 const modal = document.getElementById("modal");
@@ -350,6 +351,14 @@ function askEdit(oldText, oldUserId, title) {
 const TODOS_LIMIT = 15;
 const isServerTodo = (id) => id <= 254;
 
+async function loadUsers() {
+  const response = await fetch("https://dummyjson.com/users?limit=0&select=username,image");
+  const data = await response.json();
+  data.users.forEach((user) => {
+    usersMap[user.id] = user;
+  });
+}
+
 async function fetchTodos() {
   try {
     if (todoError) todoError.textContent = "";
@@ -359,6 +368,7 @@ async function fetchTodos() {
 
     const data = await response.json();
     todos = data.todos;
+    await loadUsers();
     renderTodos();
   } catch (error) {
     if (todoError)
@@ -410,6 +420,11 @@ function renderTodos() {
   filteredTodos.forEach((item) => {
     const li = document.createElement("li");
     li.className = `todo-item ${item.completed ? "completed" : ""}`;
+    const user = usersMap[item.userId];
+    const userName = user ? user.username : "User " + item.userId;
+    const avatarHtml = user
+        ? `<img src="${user.image}" style="width: 18px; height: 18px; border-radius: 50%; vertical-align: middle; pointer-events: none;">`
+        : "";
     li.style.cssText =
       "display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f1f3; gap: 12px;";
 
@@ -417,7 +432,7 @@ function renderTodos() {
       <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
         <input type="checkbox" ${item.completed ? "checked" : ""} data-id="${item.id}" class="todo-checkbox">
         <span class="todo-text" style="cursor: pointer;" data-userid="${item.userId}">${item.todo}</span>
-        <button class="user-badge-btn task-btn" data-userid="${item.userId}" style="padding: 2px 8px; font-size: 11px; cursor: pointer; background: #eef2f7;">User ${item.userId}</button>
+        <button class="user-badge-btn task-btn" data-userid="${item.userId}" style="padding: 2px 8px; font-size: 11px; cursor: pointer; background: #eef2f7;">${avatarHtml} ${userName}</button>
       </div>
       <button class="delete-btn task-btn" data-id="${item.id}" style="color: #c0392b; border-color: #d7d9de;">Удалить</button>
       <button class="edit-btn task-btn" data-id="${item.id}">Изменить</button>
@@ -449,6 +464,7 @@ async function openUserProfile(userId) {
     userInfoContainer.innerHTML = `
       <img src="${user.image}" alt="${user.firstName}" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 12px; border: 2px solid #3498db;">
       <h3 style="margin: 4px 0;">${user.firstName} ${user.lastName}</h3>
+      <p style="color: #3498db; font-size: 13px; margin: 4px 0;">@${user.username}</p>
       <p style="color: #7f8c8d; font-size: 13px; margin: 4px 0;">User ID: <strong>${user.id}</strong></p>
       <p style="font-size: 13px; margin: 4px 0;">📧 ${user.email}</p>
       <p style="font-size: 13px; margin: 4px 0;">📞 ${user.phone}</p>
