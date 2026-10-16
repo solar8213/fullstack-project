@@ -208,7 +208,6 @@ btnGenerateTable.addEventListener("click", () => {
   if (tableError) tableError.textContent = "";
   if (colorCountResult) colorCountResult.textContent = "";
 
-  // ПРОВЕРКА: Если значение меньше либо равно 0 или пустое
   if (isNaN(rows) || isNaN(cols) || rows <= 0 || cols <= 0) {
     if (tableError) {
       tableError.textContent =
@@ -223,7 +222,6 @@ btnGenerateTable.addEventListener("click", () => {
   generateTable(rows, cols);
 });
 
-// 2. Подсчет ячеек вынесен наружу
 if (btnCountColor) {
   btnCountColor.addEventListener("click", () => {
     const selectedColor = colorSelect.value;
@@ -279,8 +277,7 @@ function updateColorCounters() {
     }
   });
 
-  // Находим элементы на странице и обновляем их текст
-  // (убедитесь, что такие id есть в вашем HTML)
+ 
   const elNone = document.getElementById("count-none");
   const elYellow = document.getElementById("count-yellow");
   const elGreen = document.getElementById("count-green");
@@ -306,7 +303,16 @@ const filterStatus = document.getElementById("filter-status");
 const filterSearch = document.getElementById("filter-search");
 const filterSort = document.getElementById("filter-sort");
 
+const userProfileModal = document.getElementById("user-profile-modal");
+const userModalClose = document.getElementById("user-modal-close");
+const userInfoContainer = document.getElementById("user-info-container");
+const userTodoList = document.getElementById("user-todo-list");
+const userTaskInput = document.getElementById("user-task-input");
+const userTaskAddBtn = document.getElementById("user-task-add-btn");
+const userTaskError = document.getElementById("user-task-error");
+
 let todos = [];
+let currentActiveUserId = null; 
 const modal = document.getElementById("modal");
 const modalInput = document.getElementById("modal-input");
 const modalOk = document.getElementById("modal-ok");
@@ -347,7 +353,7 @@ const isServerTodo = (id) => id <= 254;
 async function fetchTodos() {
   try {
     if (todoError) todoError.textContent = "";
-    const response = await fetch("https://dummyjson.com/todos?limit=10");
+    const response = await fetch("https://dummyjson.com/todos?limit=15");
 
     if (!response.ok) throw new Error("HTTP " + response.status);
 
@@ -409,14 +415,100 @@ function renderTodos() {
     li.innerHTML = `
       <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
         <input type="checkbox" ${item.completed ? "checked" : ""} data-id="${item.id}" class="todo-checkbox">
-        <span class="todo-text">${item.todo}</span>
-        <span class="todo-user" style="color: #7a7f88; font-size: 12px;">User ${item.userId} (ID: ${item.id})</span>
+        <span class="todo-text" style="cursor: pointer;" data-userid="${item.userId}">${item.todo}</span>
+        <button class="user-badge-btn task-btn" data-userid="${item.userId}" style="padding: 2px 8px; font-size: 11px; cursor: pointer; background: #eef2f7;">User ${item.userId}</button>
       </div>
       <button class="delete-btn task-btn" data-id="${item.id}" style="color: #c0392b; border-color: #d7d9de;">Удалить</button>
       <button class="edit-btn task-btn" data-id="${item.id}">Изменить</button>
     `;
 
     todoList.appendChild(li);
+  });
+
+  if (currentActiveUserId && userProfileModal && !userProfileModal.classList.contains("hidden")) {
+    renderUserTasks(currentActiveUserId);
+  }
+}
+
+/* ========================================================
+   ЛОГИКА ПРОФИЛЯ ПОЛЬЗОВАТЕЛЯ И ДВУХКОЛОНОЧНОГО ОКНА
+   ======================================================== */
+
+async function openUserProfile(userId) {
+  currentActiveUserId = userId;
+  userProfileModal.classList.remove("hidden");
+  userInfoContainer.innerHTML = "<p>Загрузка данных профиля...</p>";
+  if (userTaskError) userTaskError.textContent = "";
+
+  try {
+    const response = await fetch(`https://dummyjson.com/users/${userId}`);
+    if (!response.ok) throw new Error("Пользователь не найден");
+    const user = await response.json();
+
+    userInfoContainer.innerHTML = `
+      <img src="${user.image}" alt="${user.firstName}" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 12px; border: 2px solid #3498db;">
+      <h3 style="margin: 4px 0;">${user.firstName} ${user.lastName}</h3>
+      <p style="color: #7f8c8d; font-size: 13px; margin: 4px 0;">User ID: <strong>${user.id}</strong></p>
+      <p style="font-size: 13px; margin: 4px 0;">📧 ${user.email}</p>
+      <p style="font-size: 13px; margin: 4px 0;">📞 ${user.phone}</p>
+      <p style="font-size: 13px; margin: 4px 0;">🏢 ${user.company?.name || 'Компания не указана'}</p>
+    `;
+  } catch (error) {
+    userInfoContainer.innerHTML = `
+      <div style="width: 80px; height: 80px; border-radius: 50%; background: #ccc; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 24px;">👤</div>
+      <h3>User #${userId}</h3>
+      <p style="color: #e74c3c; font-size: 12px;">Доп. данные API недоступны</p>
+    `;
+  }
+
+  renderUserTasks(userId);
+}
+
+function renderUserTasks(userId) {
+  userTodoList.innerHTML = "";
+  const userTasks = todos.filter((t) => t.userId === userId);
+
+  if (userTasks.length === 0) {
+    userTodoList.innerHTML = '<li style="padding: 12px; color: #888;">У этого пользователя нет задач.</li>';
+    return;
+  }
+
+  userTasks.forEach((item) => {
+    const li = document.createElement("li");
+    li.style.cssText = "display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid #f0f1f3; gap: 8px;";
+    li.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
+        <input type="checkbox" ${item.completed ? "checked" : ""} data-id="${item.id}" class="todo-checkbox">
+        <span style="${item.completed ? "text-decoration: line-through; color: #888;" : ""}">${item.todo}</span>
+      </div>
+      <button class="delete-btn task-btn" data-id="${item.id}" style="color: #c0392b; padding: 2px 6px; font-size: 12px;">Удалить</button>
+    `;
+    userTodoList.appendChild(li);
+  });
+}
+
+if (userTaskAddBtn) {
+  userTaskAddBtn.addEventListener("click", () => {
+    const text = userTaskInput.value.trim();
+    if (!text || !currentActiveUserId) return;
+
+    const newTodo = {
+      id: Date.now(),
+      todo: text,
+      completed: false,
+      userId: currentActiveUserId,
+    };
+
+    todos.unshift(newTodo);
+    userTaskInput.value = "";
+    renderTodos(); 
+  });
+}
+
+if (userModalClose) {
+  userModalClose.addEventListener("click", () => {
+    userProfileModal.classList.add("hidden");
+    currentActiveUserId = null;
   });
 }
 
@@ -431,8 +523,7 @@ async function addTodo() {
   const text = result.text.trim();
   const userId = result.userId;
   if (!Number.isInteger(userId) || userId < 1) {
-    if (todoError)
-      todoError.textContent = "User ID должен быть целым числом от 1!";
+    if (todoError) todoError.textContent = "User ID должен быть целым числом от 1!";
     return;
   }
 
@@ -440,11 +531,7 @@ async function addTodo() {
     const response = await fetch("https://dummyjson.com/todos/add", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        todo: text,
-        completed: false,
-        userId: userId,
-      }),
+      body: JSON.stringify({ todo: text, completed: false, userId: userId }),
     });
 
     if (!response.ok) throw new Error("HTTP " + response.status);
@@ -461,14 +548,18 @@ async function addTodo() {
 
 if (todoList) {
   todoList.addEventListener("click", async (e) => {
+    if (e.target.classList.contains("user-badge-btn") || e.target.classList.contains("todo-text")) {
+      const uId = Number(e.target.getAttribute("data-userid"));
+      if (uId) openUserProfile(uId);
+      return;
+    }
+
     const id = Number(e.target.getAttribute("data-id"));
 
     if (e.target.classList.contains("delete-btn")) {
       try {
         if (isServerTodo(id)) {
-          const res = await fetch(`https://dummyjson.com/todos/${id}`, {
-            method: "DELETE",
-          });
+          const res = await fetch(`https://dummyjson.com/todos/${id}`, { method: "DELETE" });
           if (!res.ok) throw new Error("HTTP " + res.status);
         }
         todos = todos.filter((t) => t.id !== id);
@@ -487,8 +578,7 @@ if (todoList) {
       const newText = result.text.trim();
       const newUserId = result.userId;
       if (!Number.isInteger(newUserId) || newUserId < 1) {
-        if (todoError)
-          todoError.textContent = "User ID должен быть целым числом от 1!";
+        if (todoError) todoError.textContent = "User ID должен быть целым числом от 1!";
         return;
       }
 
@@ -530,10 +620,22 @@ if (todoList) {
   });
 }
 
-if (btnLoad) btnLoad.addEventListener("click", fetchTodos);
-if (btnAdd) btnAdd.addEventListener("click", addTodo);
-if (todoInput) {
-  todoInput.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") addTodo();
+if (userTodoList) {
+  userTodoList.addEventListener("click", (e) => {
+    const id = Number(e.target.getAttribute("data-id"));
+    if (e.target.classList.contains("delete-btn")) {
+      todos = todos.filter((t) => t.id !== id);
+      renderTodos();
+    }
+    if (e.target.classList.contains("todo-checkbox")) {
+      const target = todos.find((t) => t.id === id);
+      if (target) {
+        target.completed = e.target.checked;
+        renderTodos();
+      }
+    }
   });
 }
+
+if (btnLoad) btnLoad.addEventListener("click", fetchTodos);
+if (btnAdd) btnAdd.addEventListener("click", addTodo);
