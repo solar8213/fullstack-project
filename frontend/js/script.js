@@ -666,3 +666,4 @@ if (btnLoad) btnLoad.addEventListener("click", fetchTodos);
 if (btnAdd) btnAdd.addEventListener("click", addTodo);
 
 
+//проверил код
