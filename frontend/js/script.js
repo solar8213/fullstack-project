@@ -347,13 +347,13 @@ function askEdit(oldText, oldUserId, title) {
     modalUserId.onkeydown = onKey;
   });
 }
-
+const TODOS_LIMIT = 15;
 const isServerTodo = (id) => id <= 254;
 
 async function fetchTodos() {
   try {
     if (todoError) todoError.textContent = "";
-    const response = await fetch("https://dummyjson.com/todos?limit=15");
+    const response = await fetch("https://dummyjson.com/todos?limit=" + TODOS_LIMIT);
 
     if (!response.ok) throw new Error("HTTP " + response.status);
 
@@ -400,6 +400,7 @@ function renderTodos() {
   todoList.innerHTML = "";
 
   const filteredTodos = getFilteredTodos();
+  console.log("Задач на экране:", filteredTodos.length);
 
   if (filteredTodos.length === 0) {
     todoList.innerHTML = '<li class="placeholder-text">Задачи не найдены.</li>';
