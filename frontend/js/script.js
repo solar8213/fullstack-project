@@ -324,6 +324,7 @@ const userFilterStatus = document.getElementById("user-filter-status");
 const userFilterSearch = document.getElementById("user-filter-search");
 const userFilterSort = document.getElementById("user-filter-sort");
 
+
 function askEdit(oldText, oldUserId, title) {
   return new Promise((resolve) => {
     modalTitle.textContent = title;
@@ -419,14 +420,14 @@ function createTodoItem(item, showUserBadge = true) {
       "display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f1f3; gap: 12px;";
 
   li.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
-        <input type="checkbox" ${item.completed ? "checked" : ""} data-id="${item.id}" class="todo-checkbox">
-        <span class="todo-text" style="cursor: pointer;" data-userid="${item.userId}">${item.todo}</span>
-        ${showUserBadge ? `<button class="user-badge-btn task-btn" data-userid="${item.userId}" style="padding: 2px 8px; font-size: 11px; cursor: pointer; background: #eef2f7;">${avatarHtml} ${userName}</button>` : ""}
-        </div>
-      <button class="delete-btn task-btn" data-id="${item.id}" style="color: #c0392b; border-color: #d7d9de;">Удалить</button>
-      <button class="edit-btn task-btn" data-id="${item.id}">Изменить</button>
-    `;
+  <input type="checkbox" ${item.completed ? "checked" : ""} data-id="${item.id}" class="todo-checkbox"
+    style="width: 18px; height: 18px; flex: none; margin: 0;">
+  <span class="todo-text" data-userid="${item.userId}"
+    style="cursor: pointer; flex: 1; min-width: 0; text-align: left; overflow-wrap: anywhere;">${item.todo}</span>
+  ${showUserBadge ? `<button class="user-badge-btn task-btn" data-userid="${item.userId}" style="padding: 2px 8px; font-size: 11px; cursor: pointer; background: #eef2f7; flex: none;">${avatarHtml} ${userName}</button>` : ""}
+  <button class="delete-btn task-btn" data-id="${item.id}" style="color: #c0392b; border-color: #d7d9de; flex: none; white-space: nowrap;">Удалить</button>
+  <button class="edit-btn task-btn" data-id="${item.id}" style="flex: none; white-space: nowrap;">Изменить</button>
+`;
 
   return li;
 }
@@ -484,6 +485,7 @@ async function openUserProfile(userId) {
   }
 
   renderUserTasks(userId);
+  loadUserTasks(userId);
 }
 
 function renderUserTasks(userId) {
@@ -501,7 +503,21 @@ function renderUserTasks(userId) {
   });
 }
 
+async function loadUserTasks(userId) {
+  try {
+    const response = await fetch("https://dummyjson.com/todos/user/" + userId);
+    if (!response.ok) throw new Error("HTTP " + response.status);
 
+    const data = await response.json();
+    const newTasks = data.todos.filter((t) => !todos.some((x) => x.id === t.id));
+
+    todos.push(...newTasks);
+    renderTodos();
+    if (currentActiveUserId === userId) renderUserTasks(userId);
+  } catch (error) {
+    if (userTaskError) userTaskError.textContent = "Не удалось загрузить задачи пользователя!";
+  }
+}
 if (userTaskAddBtn) {
   userTaskAddBtn.addEventListener("click", () => {
     const text = userTaskInput.value.trim();
@@ -648,4 +664,5 @@ if (userTodoList) userTodoList.addEventListener("click", handleTodoClick);
 
 if (btnLoad) btnLoad.addEventListener("click", fetchTodos);
 if (btnAdd) btnAdd.addEventListener("click", addTodo);
+
 
