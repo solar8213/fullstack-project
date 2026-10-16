@@ -320,6 +320,9 @@ const modalOk = document.getElementById("modal-ok");
 const modalCancel = document.getElementById("modal-cancel");
 const modalUserId = document.getElementById("modal-userid");
 const modalTitle = document.getElementById("modal-title");
+const userFilterStatus = document.getElementById("user-filter-status");
+const userFilterSearch = document.getElementById("user-filter-search");
+const userFilterSort = document.getElementById("user-filter-sort");
 
 function askEdit(oldText, oldUserId, title) {
   return new Promise((resolve) => {
@@ -377,12 +380,12 @@ async function fetchTodos() {
   }
 }
 
-function getFilteredTodos() {
-  const status = filterStatus ? filterStatus.value : "all";
-  const search = filterSearch ? filterSearch.value.toLowerCase().trim() : "";
-  const sort = filterSort ? filterSort.value : "default";
+function getFilteredTodos(list, statusEl, searchEl, sortEl) {
+  const status = statusEl ? statusEl.value : "all";
+  const search = searchEl ? searchEl.value.toLowerCase().trim() : "";
+  const sort = sortEl ? sortEl.value : "default";
 
-  let result = todos.filter((item) => {
+  let result = list.filter((item) => {
     if (status === "completed" && !item.completed) return false;
     if (status === "pending" && item.completed) return false;
 
@@ -404,12 +407,34 @@ function getFilteredTodos() {
 
   return result;
 }
+function createTodoItem(item, showUserBadge = true) {
+  const li = document.createElement("li");
+  li.className = `todo-item ${item.completed ? "completed" : ""}`;
+  const user = usersMap[item.userId];
+  const userName = user ? user.username : "User " + item.userId;
+  const avatarHtml = user
+      ? `<img src="${user.image}" style="width: 18px; height: 18px; border-radius: 50%; vertical-align: middle; pointer-events: none;">`
+      : "";
+  li.style.cssText =
+      "display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f1f3; gap: 12px;";
 
+  li.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
+        <input type="checkbox" ${item.completed ? "checked" : ""} data-id="${item.id}" class="todo-checkbox">
+        <span class="todo-text" style="cursor: pointer;" data-userid="${item.userId}">${item.todo}</span>
+        ${showUserBadge ? `<button class="user-badge-btn task-btn" data-userid="${item.userId}" style="padding: 2px 8px; font-size: 11px; cursor: pointer; background: #eef2f7;">${avatarHtml} ${userName}</button>` : ""}
+        </div>
+      <button class="delete-btn task-btn" data-id="${item.id}" style="color: #c0392b; border-color: #d7d9de;">Удалить</button>
+      <button class="edit-btn task-btn" data-id="${item.id}">Изменить</button>
+    `;
+
+  return li;
+}
 function renderTodos() {
   if (!todoList) return;
   todoList.innerHTML = "";
 
-  const filteredTodos = getFilteredTodos();
+  const filteredTodos = getFilteredTodos(todos, filterStatus, filterSearch, filterSort);
   console.log("Задач на экране:", filteredTodos.length);
 
   if (filteredTodos.length === 0) {
@@ -418,27 +443,7 @@ function renderTodos() {
   }
 
   filteredTodos.forEach((item) => {
-    const li = document.createElement("li");
-    li.className = `todo-item ${item.completed ? "completed" : ""}`;
-    const user = usersMap[item.userId];
-    const userName = user ? user.username : "User " + item.userId;
-    const avatarHtml = user
-        ? `<img src="${user.image}" style="width: 18px; height: 18px; border-radius: 50%; vertical-align: middle; pointer-events: none;">`
-        : "";
-    li.style.cssText =
-      "display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f1f3; gap: 12px;";
-
-    li.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
-        <input type="checkbox" ${item.completed ? "checked" : ""} data-id="${item.id}" class="todo-checkbox">
-        <span class="todo-text" style="cursor: pointer;" data-userid="${item.userId}">${item.todo}</span>
-        <button class="user-badge-btn task-btn" data-userid="${item.userId}" style="padding: 2px 8px; font-size: 11px; cursor: pointer; background: #eef2f7;">${avatarHtml} ${userName}</button>
-      </div>
-      <button class="delete-btn task-btn" data-id="${item.id}" style="color: #c0392b; border-color: #d7d9de;">Удалить</button>
-      <button class="edit-btn task-btn" data-id="${item.id}">Изменить</button>
-    `;
-
-    todoList.appendChild(li);
+    todoList.appendChild(createTodoItem(item));
   });
 
   if (currentActiveUserId && userProfileModal && !userProfileModal.classList.contains("hidden")) {
@@ -484,25 +489,18 @@ async function openUserProfile(userId) {
 function renderUserTasks(userId) {
   userTodoList.innerHTML = "";
   const userTasks = todos.filter((t) => t.userId === userId);
+  const filtered = getFilteredTodos(userTasks, userFilterStatus, userFilterSearch, userFilterSort);
 
-  if (userTasks.length === 0) {
-    userTodoList.innerHTML = '<li style="padding: 12px; color: #888;">У этого пользователя нет задач.</li>';
+  if (filtered.length === 0) {
+    userTodoList.innerHTML = '<li class="placeholder-text">Задачи не найдены.</li>';
     return;
   }
 
-  userTasks.forEach((item) => {
-    const li = document.createElement("li");
-    li.style.cssText = "display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid #f0f1f3; gap: 8px;";
-    li.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
-        <input type="checkbox" ${item.completed ? "checked" : ""} data-id="${item.id}" class="todo-checkbox">
-        <span style="${item.completed ? "text-decoration: line-through; color: #888;" : ""}">${item.todo}</span>
-      </div>
-      <button class="delete-btn task-btn" data-id="${item.id}" style="color: #c0392b; padding: 2px 6px; font-size: 12px;">Удалить</button>
-    `;
-    userTodoList.appendChild(li);
+  filtered.forEach((item) => {
+    userTodoList.appendChild(createTodoItem(item, false));
   });
 }
+
 
 if (userTaskAddBtn) {
   userTaskAddBtn.addEventListener("click", () => {
@@ -518,9 +516,16 @@ if (userTaskAddBtn) {
 
     todos.unshift(newTodo);
     userTaskInput.value = "";
-    renderTodos(); 
+    renderTodos();
   });
 }
+
+[userFilterStatus, userFilterSearch, userFilterSort].forEach((el) => {
+  if (el) {
+    el.addEventListener("change", () => renderUserTasks(currentActiveUserId));
+    el.addEventListener("input", () => renderUserTasks(currentActiveUserId));
+  }
+});
 
 if (userModalClose) {
   userModalClose.addEventListener("click", () => {
@@ -563,9 +568,11 @@ async function addTodo() {
   }
 }
 
-if (todoList) {
-  todoList.addEventListener("click", async (e) => {
-    if (e.target.classList.contains("user-badge-btn") || e.target.classList.contains("todo-text")) {
+async function handleTodoClick(e) {
+  if (
+      (e.target.classList.contains("user-badge-btn") || e.target.classList.contains("todo-text")) &&
+      !userTodoList.contains(e.target)
+  ) {
       const uId = Number(e.target.getAttribute("data-userid"));
       if (uId) openUserProfile(uId);
       return;
@@ -634,25 +641,11 @@ if (todoList) {
         if (todoError) todoError.textContent = "Ошибка при обновлении задачи!";
       }
     }
-  });
 }
 
-if (userTodoList) {
-  userTodoList.addEventListener("click", (e) => {
-    const id = Number(e.target.getAttribute("data-id"));
-    if (e.target.classList.contains("delete-btn")) {
-      todos = todos.filter((t) => t.id !== id);
-      renderTodos();
-    }
-    if (e.target.classList.contains("todo-checkbox")) {
-      const target = todos.find((t) => t.id === id);
-      if (target) {
-        target.completed = e.target.checked;
-        renderTodos();
-      }
-    }
-  });
-}
+if (todoList) todoList.addEventListener("click", handleTodoClick);
+if (userTodoList) userTodoList.addEventListener("click", handleTodoClick);
 
 if (btnLoad) btnLoad.addEventListener("click", fetchTodos);
 if (btnAdd) btnAdd.addEventListener("click", addTodo);
+

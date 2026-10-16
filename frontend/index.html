@@ -412,7 +412,22 @@
                 <div class="user-tasks-side"
                     style="flex: 2; min-width: 300px; display: flex; flex-direction: column; gap: 12px;">
                     <h3>Задачи пользователя</h3>
+                    <div id="user-todo-filters" class="todo-filters"
+                         style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <select id="user-filter-status" class="task-input">
+                            <option value="all">Все статусы</option>
+                            <option value="completed">Выполненные</option>
+                            <option value="pending">Не выполненные</option>
+                        </select>
 
+                        <input type="text" id="user-filter-search" class="task-input" placeholder="Поиск (текст / ID)...">
+
+                        <select id="user-filter-sort" class="task-input">
+                            <option value="default">Без сортировки</option>
+                            <option value="id-asc">По созданию (предыдущие)</option>
+                            <option value="id-desc">По созданию (актуальные)</option>
+                        </select>
+                    </div>
                     <div style="display: flex; gap: 8px;">
                         <input type="text" id="user-task-input" placeholder="Новая задача..."
                             style="flex: 1; padding: 8px; border: 1px solid #d7d9de; border-radius: 6px;">
@@ -421,16 +436,13 @@
 
                     <div id="user-task-error" class="error-message" role="alert"></div>
 
-                    <ul id="user-todo-list"
+                    <ul id="user-todo-list" class="todo-list"
                         style="list-style: none; padding: 0; margin: 0; max-height: 300px; overflow-y: auto; border: 1px solid #eee; border-radius: 6px;">
                     </ul>
                 </div>
 
             </div>
         </div>
-    </div>
-    </div>
-    </div>
     </div>
     <script src="js/script.js"></script>
 </body>
