@@ -15,7 +15,7 @@ teamMembers.forEach((member) => {
     if (targetButton) targetButton.click();
   });
 });
-//Комит
+
 buttons.forEach((button) => {
   button.addEventListener("click", () => {
     buttons.forEach((btn) => btn.classList.remove("active"));
