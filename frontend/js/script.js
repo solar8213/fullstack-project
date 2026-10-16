@@ -15,7 +15,7 @@ teamMembers.forEach((member) => {
     if (targetButton) targetButton.click();
   });
 });
-
+//For commit
 console.log("App initialized");
 buttons.forEach((button) => {
   button.addEventListener("click", () => {
