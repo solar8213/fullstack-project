@@ -16,6 +16,7 @@ teamMembers.forEach((member) => {
   });
 });
 
+console.log("App initialized");
 buttons.forEach((button) => {
   button.addEventListener("click", () => {
     buttons.forEach((btn) => btn.classList.remove("active"));
