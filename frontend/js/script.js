@@ -302,6 +302,10 @@ const btnAdd = document.getElementById("btn-add");
 const todoInput = document.getElementById("todo-input");
 const todoError = document.getElementById("todo-error");
 
+const filterStatus = document.getElementById("filter-status");
+const filterSearch = document.getElementById("filter-search");
+const filterSort = document.getElementById("filter-sort");
+
 let todos = [];
 const modal = document.getElementById("modal");
 const modalInput = document.getElementById("modal-input");
@@ -357,16 +361,46 @@ async function fetchTodos() {
   }
 }
 
+function getFilteredTodos() {
+  const status = filterStatus ? filterStatus.value : "all";
+  const search = filterSearch ? filterSearch.value.toLowerCase().trim() : "";
+  const sort = filterSort ? filterSort.value : "default";
+
+  let result = todos.filter((item) => {
+    if (status === "completed" && !item.completed) return false;
+    if (status === "pending" && item.completed) return false;
+
+    if (search !== "") {
+      const textMatch = item.todo && item.todo.toLowerCase().includes(search);
+      const idMatch = String(item.id).includes(search);
+      const userMatch = String(item.userId).includes(search);
+      if (!textMatch && !idMatch && !userMatch) return false;
+    }
+
+    return true;
+  });
+
+  if (sort === "id-asc") {
+    result.sort((a, b) => a.id - b.id);
+  } else if (sort === "id-desc") {
+    result.sort((a, b) => b.id - a.id);
+  }
+
+  return result;
+}
+
 function renderTodos() {
   if (!todoList) return;
   todoList.innerHTML = "";
 
-  if (todos.length === 0) {
-    todoList.innerHTML = '<li class="placeholder-text">Список задач пуст.</li>';
+  const filteredTodos = getFilteredTodos();
+
+  if (filteredTodos.length === 0) {
+    todoList.innerHTML = '<li class="placeholder-text">Задачи не найдены.</li>';
     return;
   }
 
-  todos.forEach((item) => {
+  filteredTodos.forEach((item) => {
     const li = document.createElement("li");
     li.className = `todo-item ${item.completed ? "completed" : ""}`;
     li.style.cssText =
@@ -376,7 +410,7 @@ function renderTodos() {
       <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
         <input type="checkbox" ${item.completed ? "checked" : ""} data-id="${item.id}" class="todo-checkbox">
         <span class="todo-text">${item.todo}</span>
-        <span class="todo-user" style="color: #7a7f88; font-size: 12px;">User ${item.userId}</span>
+        <span class="todo-user" style="color: #7a7f88; font-size: 12px;">User ${item.userId} (ID: ${item.id})</span>
       </div>
       <button class="delete-btn task-btn" data-id="${item.id}" style="color: #c0392b; border-color: #d7d9de;">Удалить</button>
       <button class="edit-btn task-btn" data-id="${item.id}">Изменить</button>
@@ -385,6 +419,10 @@ function renderTodos() {
     todoList.appendChild(li);
   });
 }
+
+if (filterStatus) filterStatus.addEventListener("change", renderTodos);
+if (filterSearch) filterSearch.addEventListener("input", renderTodos);
+if (filterSort) filterSort.addEventListener("change", renderTodos);
 
 async function addTodo() {
   const result = await askEdit("", "", "Новая задача");

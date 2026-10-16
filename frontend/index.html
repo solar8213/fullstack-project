@@ -295,25 +295,40 @@
 
 
                 <!-- ================= Todos ================= -->
-        <section id="todos" class="card hidden">
-            <div class="card-info" style="width: 100%;">
-                <h2>Task 5: Список задач из API</h2>
-                <p>Работа с DummyJSON REST API (получение, добавление, удаление и обновление задач).</p>
-                
-                <div class="todo-controls" style="margin: 16px 0;">
-                    <button id="btn-load" class="task-btn">Загрузить задачи</button>
-                </div>
+<section id="todos" class="card hidden">
+    <div class="card-info" style="width: 100%;">
+        <h2>Task 5: Список задач из API</h2>
+        <p>РАБОТА С DUMMYJSON REST API (ПОЛУЧЕНИЕ, ДОБАВЛЕНИЕ, УДАЛЕНИЕ И ОБНОВЛЕНИЕ ЗАДАЧ).</p>
+        
+        <div class="todo-controls" style="margin: 16px 0; display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+            <button id="btn-load" class="task-btn">Загрузить задачи</button>
+            <button id="btn-add" class="task-btn">Добавить</button>
+        </div>
 
-                <div class="form-group" style="display: flex; gap: 12px; margin-bottom: 16px;">
-                    <button id="btn-add" class="task-btn">Добавить</button>
-                </div>
+        <div id="todo-filters" class="todo-filters" style="display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap;">
+            <!-- Фильтр по состоянию -->
+            <select id="filter-status" class="task-input">
+                <option value="all">Все статусы</option>
+                <option value="completed">Выполненные</option>
+                <option value="pending">Не выполненные</option>
+            </select>
 
-                <div id="todo-error" class="error-message" role="alert"></div>
-                <ul id="todo-list" class="todo-list" style="list-style: none; max-height: 350px; overflow-y: auto;">
-                    <p class="placeholder-text">Нажмите «Загрузить задачи», чтобы подтянуть данные с сервера.</p>
-                </ul>
-            </div>
-        </section>
+            <input type="text" id="filter-search" class="task-input" placeholder="Поиск (текст / ID)...">
+
+            <!-- Сортировка -->
+            <select id="filter-sort" class="task-input">
+                <option value="default">Без сортировки</option>
+                <option value="id-asc">По ID (возрастание)</option>
+                <option value="id-desc">По ID (убывание)</option>
+            </select>
+        </div>
+
+        <div id="todo-error" class="error-message" role="alert"></div>
+        <ul id="todo-list" class="todo-list" style="list-style: none; max-height: 350px; overflow-y: auto;">
+            <p class="placeholder-text">Нажмите «Загрузить задачи», чтобы подтянуть данные с сервера.</p>
+        </ul>
+    </div>
+</section>
     </main>
 
     <div id="dom-demo-element"></div>
